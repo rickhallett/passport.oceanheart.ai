@@ -1,4 +1,37 @@
-<div>
-  <h1 class="font-bold text-4xl">Registrations#create</h1>
-  <p>Find me in app/views/registrations/create.html.erb</p>
+<div class="terminal-page flex items-center justify-center p-4">
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <div class="terminal-controls">
+        <div class="terminal-control close"></div>
+        <div class="terminal-control minimize"></div>
+        <div class="terminal-control maximize"></div>
+      </div>
+      <div class="terminal-title">oceanheart-auth --registration-complete</div>
+    </div>
+    
+    <div class="terminal-content">
+      <div class="terminal-prompt">oceanheart-auth --registration-complete</div>
+      <div class="terminal-text mb-6">Account creation protocol completed...</div>
+
+      <div class="terminal-success mb-6">
+        <div class="terminal-success inline">✓</div>
+        Account created successfully! Welcome to Oceanheart Auth.
+      </div>
+      
+      <div class="terminal-text mb-6">
+        Your account has been created and you are now logged in.
+        You can access all system resources.
+      </div>
+      
+      <div class="text-center mb-6">
+        <%= link_to "CONTINUE TO DASHBOARD", root_path, 
+            class: "terminal-button w-full" %>
+      </div>
+      
+      <div class="terminal-divider"></div>
+      <div class="mt-4 terminal-text-muted text-center">
+        <span class="terminal-cursor">Registration protocol complete</span>
+      </div>
+    </div>
+  </div>
 </div>

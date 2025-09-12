@@ -1,17 +1,58 @@
-<div class="mx-auto md:w-2/3 w-full">
-  <% if alert = flash[:alert] %>
-    <p class="py-2 px-3 bg-red-50 mb-5 text-red-500 font-medium rounded-lg inline-block" id="alert"><%= alert %></p>
-  <% end %>
-
-  <h1 class="font-bold text-4xl">Forgot your password?</h1>
-
-  <%= form_with url: passwords_path, class: "contents" do |form| %>
-    <div class="my-5">
-      <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address], class: "block shadow-sm rounded-md border border-gray-400 focus:outline-solid focus:outline-blue-600 px-3 py-2 mt-2 w-full" %>
+<div class="terminal-page flex items-center justify-center p-4">
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <div class="terminal-controls">
+        <div class="terminal-control close"></div>
+        <div class="terminal-control minimize"></div>
+        <div class="terminal-control maximize"></div>
+      </div>
+      <div class="terminal-title">oceanheart-auth --password-reset</div>
     </div>
+    
+    <div class="terminal-content">
+      <div class="terminal-prompt">oceanheart-auth --password-reset</div>
+      <div class="terminal-text mb-6">Password recovery protocol initiated...</div>
 
-    <div class="inline">
-      <%= form.submit "Email reset instructions", class: "w-full sm:w-auto text-center rounded-lg px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
+      <% if alert = flash[:alert] %>
+        <div class="terminal-error mb-4">
+          <%= alert %>
+        </div>
+      <% end %>
+
+      <%= form_with url: passwords_path, class: "terminal-form" do |form| %>
+        <div>
+          <label for="email_address" class="terminal-label">
+            Email Address
+          </label>
+          <%= form.email_field :email_address, 
+              required: true, 
+              autofocus: true, 
+              autocomplete: "username", 
+              placeholder: "user@oceanheart.ai", 
+              value: params[:email_address], 
+              class: "terminal-input" %>
+        </div>
+
+        <div>
+          <%= form.submit "SEND RESET INSTRUCTIONS", 
+              class: "terminal-button w-full" %>
+        </div>
+      <% end %>
+      
+      <div class="terminal-divider"></div>
+      <div class="text-center terminal-text-muted mb-4">
+        Remember your password? <%= link_to "SIGN IN", sign_in_path, 
+            class: "terminal-link" %>
+      </div>
+      
+      <div class="text-center">
+        <%= link_to "BACK TO HOME", root_path, 
+            class: "terminal-button-secondary" %>
+      </div>
+      
+      <div class="mt-4 terminal-text-muted text-center">
+        <span class="terminal-cursor">Recovery protocol ready</span>
+      </div>
     </div>
-  <% end %>
+  </div>
 </div>
