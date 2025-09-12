@@ -14,68 +14,7 @@
       <div class="terminal-text mb-6">Initializing authentication protocol...</div>
 
       <%= turbo_frame_tag "authentication" do %>
-        <div class="auth-container" data-controller="auth">
-          
-          <% if alert = flash[:alert] %>
-            <div class="terminal-error">
-              <%= alert %>
-            </div>
-          <% end %>
-
-          <% if notice = flash[:notice] %>
-            <div class="terminal-success">
-              <%= notice %>
-            </div>
-          <% end %>
-
-          <div class="terminal-text mb-4" data-auth-target="status">Ready</div>
-
-          <%= form_with url: sign_in_path, 
-              local: false,
-              class: "terminal-form",
-              data: { 
-                turbo_frame: "authentication",
-                action: "turbo:submit-end->auth#handleResponse"
-              } do |form| %>
-            <div>
-              <label for="email_address" class="terminal-label">
-                Email Address
-              </label>
-              <%= form.email_field :email_address, 
-                  required: true, 
-                  autofocus: true, 
-                  autocomplete: "username", 
-                  placeholder: "user@oceanheart.ai", 
-                  value: params[:email_address], 
-                  class: "terminal-input",
-                  data: { auth_target: "email" } %>
-            </div>
-
-            <div>
-              <label for="password" class="terminal-label">
-                Password
-              </label>
-              <%= form.password_field :password, 
-                  required: true, 
-                  autocomplete: "current-password", 
-                  placeholder: "••••••••", 
-                  maxlength: 72, 
-                  class: "terminal-input",
-                  data: { auth_target: "password" } %>
-            </div>
-
-            <div>
-              <%= form.submit "SIGN IN", 
-                  class: "terminal-button w-full",
-                  data: { auth_target: "submit" } %>
-            </div>
-
-            <div class="text-center">
-              <%= link_to "FORGOT PASSWORD?", new_password_path, 
-                  class: "terminal-link" %>
-            </div>
-          <% end %>
-        </div>
+        <%= render "sessions/new" %>
       <% end %>
       
       <div class="terminal-divider"></div>
