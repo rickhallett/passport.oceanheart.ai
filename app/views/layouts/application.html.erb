@@ -23,6 +23,12 @@
   </head>
 
   <body>
+    <%# Auth status broadcast target %>
+    <%= turbo_stream_from "user_#{current_user&.id}_auth" if current_user %>
+    
+    <%# Global auth status display %>
+    <%= render "shared/auth_status", user: current_user %>
+    
     <%= yield %>
   </body>
 </html>
