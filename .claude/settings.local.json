@@ -1,0 +1,92 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:decapcms.org)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:registry.npmjs.org)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(rm:*)",
+      "Bash(mkdir:*)",
+      "Bash(rmdir:*)",
+      "Bash(touch:*)",
+      "Bash(chmod:*)",
+      "Bash(chown:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Bash(sort:*)",
+      "Bash(uniq:*)",
+      "Bash(awk:*)",
+      "Bash(sed:*)",
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Bash(ping:*)",
+      "Bash(telnet:*)",
+      "Bash(git:*)",
+      "Bash(node:*)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(yarn:*)",
+      "Bash(pnpm:*)",
+      "Bash(bun:*)",
+      "Bash(webpack:*)",
+      "Bash(vite:*)",
+      "Bash(rollup:*)",
+      "Bash(parcel:*)",
+      "Bash(esbuild:*)",
+      "Bash(turbo:*)",
+      "Bash(jest:*)",
+      "Bash(vitest:*)",
+      "Bash(mocha:*)",
+      "Bash(cypress:*)",
+      "Bash(playwright:*)",
+      "Bash(eslint:*)",
+      "Bash(prettier:*)",
+      "Bash(stylelint:*)",
+      "Bash(tsc:*)",
+      "Bash(serve:*)",
+      "Bash(http-server:*)",
+      "Bash(nodemon:*)",
+      "Bash(pm2:*)",
+      "Bash(docker:*)",
+      "Bash(docker-compose:*)",
+      "Bash(which:*)",
+      "Bash(whereis:*)",
+      "Bash(env:*)",
+      "Bash(echo:*)",
+      "Bash(pwd:*)",
+      "Bash(whoami:*)",
+      "Bash(date:*)",
+      "Bash(ps:*)",
+      "Bash(kill:*)",
+      "Bash(killall:*)",
+      "Bash(top:*)",
+      "Bash(htop:*)",
+      "mcp__github__search_code",
+      "mcp__sequential-thinking__sequentialthinking",
+      "Read(/Users/oceanheart/Library/Application Support/CleanShot/media/media_WiRyjEARle/**)"
+    ],
+    "deny": [],
+    "ask": []
+  },
+  "hooks": {
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "osascript -e 'display notification \"Claude session ended\" with title \"Claude Code\"'"
+          }
+        ]
+      }
+    ]
+  }
+}
