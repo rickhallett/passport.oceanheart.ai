@@ -1,0 +1,20 @@
+<div class="auth-container" data-controller="auth">
+  <div class="terminal-success mb-4">
+    Authentication successful! Welcome back, <%= user.email_address %>.
+  </div>
+  
+  <div class="terminal-text mb-4" data-auth-target="status">Connected</div>
+  
+  <div class="terminal-form">
+    <div class="text-center">
+      <%= link_to "CONTINUE TO DASHBOARD", root_path, 
+          class: "terminal-button w-full" %>
+    </div>
+    
+    <div class="text-center mt-4">
+      <%= link_to "SIGN OUT", sign_out_path, 
+          data: { "turbo-method": :delete },
+          class: "terminal-link" %>
+    </div>
+  </div>
+</div>

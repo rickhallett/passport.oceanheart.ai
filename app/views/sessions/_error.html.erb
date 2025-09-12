@@ -1,0 +1,52 @@
+<div class="auth-container" data-controller="auth">
+  <div class="terminal-error mb-4">
+    Authentication failed. Invalid email address or password.
+  </div>
+  
+  <div class="terminal-text mb-4 status-error" data-auth-target="status">Access denied</div>
+  
+  <%= form_with url: sign_in_path, 
+      local: false,
+      class: "terminal-form",
+      data: { 
+        turbo_frame: "authentication",
+        action: "turbo:submit-end->auth#handleResponse"
+      } do |form| %>
+    <div>
+      <label for="email_address" class="terminal-label">
+        Email Address
+      </label>
+      <%= form.email_field :email_address, 
+          required: true, 
+          autofocus: true, 
+          autocomplete: "username", 
+          placeholder: "user@oceanheart.ai", 
+          class: "terminal-input",
+          data: { auth_target: "email" } %>
+    </div>
+
+    <div>
+      <label for="password" class="terminal-label">
+        Password
+      </label>
+      <%= form.password_field :password, 
+          required: true, 
+          autocomplete: "current-password", 
+          placeholder: "••••••••", 
+          maxlength: 72, 
+          class: "terminal-input",
+          data: { auth_target: "password" } %>
+    </div>
+
+    <div>
+      <%= form.submit "SIGN IN", 
+          class: "terminal-button w-full",
+          data: { auth_target: "submit" } %>
+    </div>
+
+    <div class="text-center">
+      <%= link_to "FORGOT PASSWORD?", new_password_path, 
+          class: "terminal-link" %>
+    </div>
+  <% end %>
+</div>

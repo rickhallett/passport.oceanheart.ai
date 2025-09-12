@@ -1,0 +1,20 @@
+<div id="auth_status" class="auth-status terminal-text">
+  <% if user %>
+    <div class="flex items-center space-x-2">
+      <div class="terminal-success inline">✓</div>
+      <span>Authenticated as <%= user.email_address %></span>
+      <%= link_to "SIGN OUT", 
+          sign_out_path, 
+          data: { 
+            "turbo-method": :delete,
+            turbo_frame: "_top"
+          },
+          class: "terminal-button-secondary ml-2" %>
+    </div>
+  <% else %>
+    <div class="flex items-center space-x-2">
+      <div class="terminal-error inline">✗</div>
+      <span>Not authenticated</span>
+    </div>
+  <% end %>
+</div>
