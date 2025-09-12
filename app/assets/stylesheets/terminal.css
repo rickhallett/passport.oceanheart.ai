@@ -20,6 +20,9 @@ html, body {
   font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
   border-radius: 8px;
   box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 /* Terminal Header with Window Controls */
@@ -217,10 +220,51 @@ html, body {
 }
 
 /* Responsive Design */
-@media (max-width: 640px) {
+
+/* Extra Large screens (1200px and up) */
+@media (min-width: 1200px) {
   .terminal-window {
+    max-width: 700px;
+  }
+  
+  .terminal-content {
+    padding: 32px;
+  }
+}
+
+/* Large screens (992px to 1199px) */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .terminal-window {
+    max-width: 600px;
+  }
+}
+
+/* Medium screens (768px to 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .terminal-window {
+    max-width: 500px;
+    margin: 20px;
+  }
+}
+
+/* Small screens (576px to 767px) */
+@media (min-width: 576px) and (max-width: 767px) {
+  .terminal-window {
+    max-width: 480px;
     margin: 16px;
-    border-radius: 4px;
+  }
+  
+  .terminal-content {
+    padding: 20px;
+  }
+}
+
+/* Extra small screens (up to 575px) */
+@media (max-width: 575px) {
+  .terminal-window {
+    margin: 12px;
+    border-radius: 6px;
+    max-width: calc(100% - 24px);
   }
   
   .terminal-content {
@@ -232,7 +276,17 @@ html, body {
   }
   
   .terminal-title {
-    font-size: 11px;
+    font-size: 10px;
+    margin-left: 8px;
+  }
+  
+  .terminal-control {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .terminal-controls {
+    gap: 6px;
   }
 }
 
