@@ -115,3 +115,79 @@ Example usage:
 ```
 create-prd auth-ui-polish "Fix duplicated messages, padding, vertical alignment"
 ```
+
+## Phase 5 Preset — Logging
+
+Use this preset for application logging improvements.
+
+### Problems to Address
+- Inconsistent log format; hard-to-trace requests; missing auth context.
+
+### Requirements
+- Structured JSON logs with ISO8601 timestamps, request-id, user-id (if present), action/controller, duration, status, and error (if any).
+- Single-line logs in production; pretty logs optional in development.
+- Wrap background jobs and external calls with timing and error fields.
+
+### Acceptance Criteria
+- Each request emits start/finish log entries with the same request-id.
+- Authenticated requests include user-id; unauthenticated omit it.
+- Failures include error.class and error.message.
+
+### Implementation Notes
+- Configure `Rails.logger` to JSON (e.g., `ActiveSupport::Logger` + custom formatter).
+- Add `request_id` middleware; tag logs with `Current.user&.id`.
+
+Example:
+```
+create-prd 001-rails-time-05 "Structured JSON logging with request/user context"
+```
+
+## Phase 6 Preset — Metrics
+
+Use this preset for application metrics and dashboards.
+
+### Problems to Address
+- No visibility into throughput, latency, or resource usage.
+
+### Requirements
+- Collect counters and histograms: http_requests_total, http_latency_seconds, db_query_duration, job_duration, cache_hits.
+- Export Prometheus endpoint at `/metrics` (protected in production).
+- Define SLI candidates: availability, latency < 300ms for p95 on key actions.
+
+### Acceptance Criteria
+- `/metrics` exposes non-empty registry with http_* metrics.
+- Dashboards show request rate, error rate, and p95 latency for home and sessions#create.
+
+### Implementation Notes
+- Use `prometheus-client` or `yabeda-*` with Rack exporter.
+- Add Rack middleware to label by controller/action/status.
+
+Example:
+```
+create-prd 001-rails-time-06 "Prometheus metrics: http, db, jobs; /metrics exporter"
+```
+
+## Phase 7 Preset — Error Reporting
+
+Use this preset for runtime error capture and triage.
+
+### Problems to Address
+- Errors only visible in logs; no alerting or aggregation.
+
+### Requirements
+- Integrate an error tracker (e.g., Sentry or Honeybadger).
+- Capture exceptions with env, release, request-id, user-id, params whitelist.
+- Attach breadcrumbs for auth events and external calls.
+- Sampling: 100% in dev/staging, configurable rate in prod.
+
+### Acceptance Criteria
+- A forced exception in staging appears in the tracker with request-id and user context.
+- Tracker shows aggregate view by error.class with deduplication.
+
+### Implementation Notes
+- Add initializer with DSN via ENV; filter PII; map request-id to trace id.
+
+Example:
+```
+create-prd 001-rails-time-07 "Centralized error reporting with user + request context"
+```
