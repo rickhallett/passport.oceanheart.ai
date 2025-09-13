@@ -1,4 +1,4 @@
-<div class="terminal-page flex items-center justify-center p-4">
+<div class="terminal-page centered flex justify-center px-4 py-12 md:py-16">
   <div class="terminal-window">
     <div class="terminal-header">
       <div class="terminal-controls">
@@ -6,16 +6,17 @@
         <div class="terminal-control minimize"></div>
         <div class="terminal-control maximize"></div>
       </div>
-      <div class="terminal-title">oceanheart-auth --dashboard</div>
+      <div class="terminal-title">oceanheart-passport --auth</div>
     </div>
     
     <div class="terminal-content">
-      <div class="terminal-prompt">oceanheart-auth --dashboard</div>
+      <div class="terminal-prompt">oceanheart-passport --auth</div>
       <div class="terminal-text mb-6">System authentication status...</div>
 
+      <% content_for :suppress_auth_status, true %>
       <% if current_user %>
         <div class="terminal-success mb-6">
-          <div class="terminal-success inline">✓</div>
+          <div class="terminal-icon terminal-icon--success">✓</div>
           Access granted: Welcome back, <%= current_user.email_address %>!
         </div>
         
@@ -32,13 +33,8 @@
               class: "terminal-button-secondary" %>
         </div>
       <% else %>
-        <div class="terminal-error mb-6">
-          <div class="terminal-error inline">✗</div>
-          Authentication required to continue
-        </div>
-        
         <div class="terminal-text mb-6">
-          Please authenticate to access system resources.
+          Please authenticate to access resources.
         </div>
         
         <div class="space-y-3 mb-6">

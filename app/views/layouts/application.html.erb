@@ -26,8 +26,10 @@
     <%# Auth status broadcast target %>
     <%= turbo_stream_from "user_#{current_user&.id}_auth" if current_user %>
     
-    <%# Global auth status display %>
-    <%= render "shared/auth_status", user: current_user %>
+    <%# Global auth status display (suppressed when view sets :suppress_auth_status or any flash is present) %>
+    <% unless content_for?(:suppress_auth_status) || flash.any? %>
+      <%= render "shared/auth_status", user: current_user %>
+    <% end %>
     
     <%= yield %>
   </body>

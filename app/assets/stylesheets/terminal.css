@@ -1,25 +1,50 @@
 /* Terminal Authentication Styling */
 
+/* Monochrome theme tokens */
+:root {
+  --term-bg: #000000;
+  --term-fg: #d0d0d0;
+  --term-fg-strong: #ffffff;
+  --term-muted: #888888;
+  --term-border: #333333;
+  --term-panel: #000000;
+  --term-shadow: rgba(255, 255, 255, 0.08);
+  --term-bg-accent: rgba(255, 255, 255, 0.06);
+}
+
 /* Ensure pure black backgrounds */
 html, body {
-  background-color: #000000 !important;
+  background-color: var(--term-bg) !important;
   margin: 0;
   padding: 0;
 }
 
 /* Terminal page container */
 .terminal-page {
-  background-color: #000000 !important;
+  background-color: var(--term-bg) !important;
   min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 48px 16px;
+}
+
+/* Center on wider screens when content is short */
+@media (min-width: 768px) {
+  .terminal-page.centered {
+    align-items: center;
+    padding-top: 64px;
+    padding-bottom: 64px;
+  }
 }
 
 /* Core Terminal Window */
 .terminal-window {
-  background: #000000;
-  border: 2px solid #333333;
+  background: var(--term-panel);
+  border: 2px solid var(--term-border);
   font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
   border-radius: 8px;
-  box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+  box-shadow: 0 0 20px var(--term-shadow);
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
@@ -28,7 +53,7 @@ html, body {
 /* Terminal Header with Window Controls */
 .terminal-header {
   background: #1e1e1e;
-  border-bottom: 1px solid #333333;
+  border-bottom: 1px solid var(--term-border);
   padding: 12px 16px;
   display: flex;
   align-items: center;
@@ -48,20 +73,12 @@ html, body {
   cursor: pointer;
 }
 
-.terminal-control.close {
-  background: #ff5f57;
-}
-
-.terminal-control.minimize {
-  background: #ffbd2e;
-}
-
-.terminal-control.maximize {
-  background: #28ca42;
-}
+.terminal-control.close { background: #666666; }
+.terminal-control.minimize { background: #888888; }
+.terminal-control.maximize { background: #aaaaaa; }
 
 .terminal-title {
-  color: #888888;
+  color: var(--term-muted);
   font-size: 12px;
   margin-left: 16px;
   font-weight: normal;
@@ -69,8 +86,8 @@ html, body {
 
 /* Terminal Content Area */
 .terminal-content {
-  background: #000000;
-  color: #00ff00;
+  background: var(--term-panel);
+  color: var(--term-fg);
   padding: 24px;
   font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
   line-height: 1.4;
@@ -79,20 +96,20 @@ html, body {
 
 /* Terminal Prompt */
 .terminal-prompt {
-  color: #00ff00;
+  color: var(--term-fg);
   margin-bottom: 16px;
 }
 
 .terminal-prompt::before {
   content: "$ ";
-  color: #888888;
+  color: var(--term-muted);
 }
 
 /* Terminal Input Fields */
 .terminal-input {
-  background: #000000;
-  border: 1px solid #00ff00;
-  color: #00ff00;
+  background: var(--term-panel);
+  border: 1px solid var(--term-fg);
+  color: var(--term-fg);
   font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
   padding: 8px 12px;
   width: 100%;
@@ -102,17 +119,17 @@ html, body {
 }
 
 .terminal-input:focus {
-  border-color: #00ff88;
-  box-shadow: 0 0 6px rgba(0, 255, 0, 0.3);
+  border-color: var(--term-fg-strong);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
 }
 
 .terminal-input::placeholder {
-  color: #006600;
+  color: var(--term-muted);
 }
 
 /* Terminal Labels */
 .terminal-label {
-  color: #00ff00;
+  color: var(--term-fg);
   font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
   display: block;
   margin-bottom: 6px;
@@ -125,9 +142,9 @@ html, body {
 
 /* Terminal Buttons */
 .terminal-button {
-  background: #000000;
-  border: 1px solid #00ff00;
-  color: #00ff00;
+  background: var(--term-panel);
+  border: 1px solid var(--term-fg);
+  color: var(--term-fg);
   font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
   padding: 10px 20px;
   cursor: pointer;
@@ -142,18 +159,18 @@ html, body {
 }
 
 .terminal-button:hover {
-  background: #00ff00;
-  color: #000000;
-  box-shadow: 0 0 8px rgba(0, 255, 0, 0.4);
+  background: var(--term-fg);
+  color: var(--term-bg);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
 }
 
 .terminal-button:active {
-  background: #00cc00;
+  background: #bbbbbb;
 }
 
 /* Terminal Links */
 .terminal-link {
-  color: #00ff00;
+  color: var(--term-fg);
   text-decoration: underline;
   font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
   transition: color 0.2s ease;
@@ -161,19 +178,19 @@ html, body {
 
 .terminal-link::before {
   content: "> ";
-  color: #888888;
+  color: var(--term-muted);
 }
 
 .terminal-link:hover {
-  color: #00ff88;
+  color: var(--term-fg-strong);
   text-decoration: none;
 }
 
 /* Terminal Error Messages */
 .terminal-error {
-  background: rgba(255, 0, 0, 0.1);
-  border: 1px solid #ff0000;
-  color: #ff4444;
+  background: var(--term-bg-accent);
+  border: 1px solid var(--term-fg);
+  color: var(--term-fg-strong);
   padding: 12px;
   margin: 16px 0;
   font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
@@ -182,15 +199,15 @@ html, body {
 
 .terminal-error::before {
   content: "ERROR: ";
-  color: #ff0000;
+  color: var(--term-fg-strong);
   font-weight: bold;
 }
 
 /* Terminal Success Messages */
 .terminal-success {
-  background: rgba(0, 255, 0, 0.1);
-  border: 1px solid #00ff00;
-  color: #00ff88;
+  background: var(--term-bg-accent);
+  border: 1px solid var(--term-fg);
+  color: var(--term-fg-strong);
   padding: 12px;
   margin: 16px 0;
   font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
@@ -199,9 +216,18 @@ html, body {
 
 .terminal-success::before {
   content: "SUCCESS: ";
-  color: #00ff00;
+  color: var(--term-fg);
   font-weight: bold;
 }
+
+/* Icons that do not carry the SUCCESS/ERROR labels */
+.terminal-icon {
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.terminal-icon--success { color: var(--term-fg); }
+.terminal-icon--error { color: var(--term-fg-strong); }
 
 /* Blinking Cursor Animation */
 .terminal-cursor {
@@ -215,7 +241,7 @@ html, body {
 
 .terminal-cursor::after {
   content: "_";
-  color: #00ff00;
+  color: var(--term-fg);
   animation: blink 1s infinite;
 }
 
@@ -292,12 +318,12 @@ html, body {
 
 /* Terminal Text Styling */
 .terminal-text {
-  color: #00ff00;
+  color: var(--term-fg);
   font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
 }
 
 .terminal-text-muted {
-  color: #888888;
+  color: var(--term-muted);
   font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
 }
 
@@ -312,7 +338,7 @@ html, body {
 
 /* Terminal Divider */
 .terminal-divider {
-  border-top: 1px solid #333333;
+  border-top: 1px solid var(--term-border);
   margin: 24px 0;
 }
 
@@ -331,8 +357,8 @@ html, body {
 }
 
 .terminal-button-secondary:hover {
-  color: #00ff00;
-  border-color: #00ff00;
+  color: var(--term-fg);
+  border-color: var(--term-fg);
 }
 
 /* Hotwire/Turbo Animation Effects */
@@ -356,14 +382,14 @@ html, body {
 }
 
 .status-info {
-  color: #00ff00;
+  color: var(--term-fg);
 }
 
 .status-error {
-  color: #ff4444;
+  color: var(--term-fg-strong);
   animation: blink 1s infinite;
 }
 
 .status-success {
-  color: #00ff88;
+  color: var(--term-fg-strong);
 }

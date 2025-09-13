@@ -1,7 +1,7 @@
 <div id="auth_status" class="auth-status terminal-text">
   <% if user %>
     <div class="flex items-center space-x-2">
-      <div class="terminal-success inline">✓</div>
+      <div class="terminal-icon terminal-icon--success">✓</div>
       <span>Authenticated as <%= user.email_address %></span>
       <%= link_to "SIGN OUT", 
           sign_out_path, 
@@ -13,7 +13,7 @@
     </div>
   <% else %>
     <div class="flex items-center space-x-2">
-      <div class="terminal-error inline">✗</div>
+      <div class="terminal-icon terminal-icon--error">✗</div>
       <span>Not authenticated</span>
     </div>
   <% end %>
