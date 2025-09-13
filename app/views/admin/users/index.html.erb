@@ -1,0 +1,63 @@
+<div class="terminal-page centered flex justify-center px-4 py-12 md:py-16">
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <div class="terminal-controls">
+        <div class="terminal-control close"></div>
+        <div class="terminal-control minimize"></div>
+        <div class="terminal-control maximize"></div>
+      </div>
+      <div class="terminal-title">oceanheart-passport --admin users</div>
+    </div>
+
+    <% content_for :suppress_auth_status, true %>
+    <div class="terminal-content">
+      <div class="terminal-prompt">oceanheart-passport --admin users</div>
+      <div class="terminal-text mb-6">Manage registered users</div>
+
+      <div class="mb-4">
+        <%= form_with url: admin_users_path, method: :get, local: true, class: "terminal-form" do |f| %>
+          <div class="flex gap-2 items-end">
+            <div class="flex-1">
+              <label class="terminal-label">Search</label>
+              <%= text_field_tag :search, @search, class: "terminal-input", placeholder: "email..." %>
+            </div>
+            <div>
+              <label class="terminal-label">Role</label>
+              <%= select_tag :role, options_for_select([["All", ""], ["User", "user"], ["Admin", "admin"]], @role), class: "terminal-input" %>
+            </div>
+            <div>
+              <%= submit_tag "Filter", class: "terminal-button" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <table class="w-full">
+        <thead class="terminal-text-muted">
+          <tr>
+            <th class="text-left">Email</th>
+            <th class="text-left">Role</th>
+            <th class="text-left">Created</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="users">
+          <% @users.each do |user| %>
+            <%= render "user_row", user: user %>
+          <% end %>
+        </tbody>
+      </table>
+
+      <div class="mt-4 terminal-text-muted">
+        Page <%= @page %> of <%= @total_pages %>
+        <% if @page > 1 %>
+          <%= link_to "Prev", admin_users_path(search: @search, role: @role, page: @page - 1), class: "terminal-link ml-2" %>
+        <% end %>
+        <% if @page < @total_pages %>
+          <%= link_to "Next", admin_users_path(search: @search, role: @role, page: @page + 1), class: "terminal-link ml-2" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+

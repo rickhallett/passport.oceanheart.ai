@@ -1,0 +1,28 @@
+<div class="terminal-page centered flex justify-center px-4 py-12 md:py-16">
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <div class="terminal-controls">
+        <div class="terminal-control close"></div>
+        <div class="terminal-control minimize"></div>
+        <div class="terminal-control maximize"></div>
+      </div>
+      <div class="terminal-title">oceanheart-passport --admin user</div>
+    </div>
+
+    <% content_for :suppress_auth_status, true %>
+    <div class="terminal-content">
+      <div class="terminal-prompt">oceanheart-passport --admin user</div>
+      <div class="terminal-text mb-6">User details</div>
+
+      <div class="terminal-text">
+        Email: <%= @user.email_address %><br>
+        Role: <%= @user.role %><br>
+        Created: <%= @user.created_at %>
+      </div>
+
+      <div class="terminal-divider"></div>
+      <%= link_to "Back to users", admin_users_path, class: "terminal-link" %>
+    </div>
+  </div>
+</div>
+

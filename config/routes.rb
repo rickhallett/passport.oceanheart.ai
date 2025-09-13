@@ -18,6 +18,14 @@ Rails.application.routes.draw do
     post 'auth/refresh', to: 'auth#refresh'
     get 'auth/user', to: 'auth#user'
   end
+
+  # Admin interface
+  namespace :admin do
+    resources :users, only: [:index, :show, :destroy] do
+      post :toggle_role, on: :member
+    end
+    root to: 'users#index'
+  end
   
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

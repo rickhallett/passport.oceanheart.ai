@@ -1,0 +1,12 @@
+<tr id="<%= dom_id(user) %>">
+  <td class="py-2"><%= user.email_address %></td>
+  <td class="py-2"><%= user.role %></td>
+  <td class="py-2"><%= user.created_at.strftime('%Y-%m-%d') %></td>
+  <td class="py-2 text-right">
+    <%= button_to (user.admin? ? 'Make User' : 'Make Admin'), toggle_role_admin_user_path(user), method: :post, form: { data: { turbo_stream: true } }, class: "terminal-button-secondary" %>
+    <% unless current_user == user %>
+      <%= button_to 'Delete', admin_user_path(user), method: :delete, data: { turbo_confirm: 'Delete this user?' }, class: "terminal-button-secondary ml-2" %>
+    <% end %>
+  </td>
+</tr>
+
