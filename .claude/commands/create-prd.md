@@ -81,3 +81,37 @@ Creates: `docs/specs/user-auth.prd.md`
 - Focus on minimum viable requirements
 - Only specify critical security considerations
 - Include date in the document (version numbers are optional)
+
+## UI/UX PRD Preset — Terminal Auth Views
+
+Use this when the feature concerns the terminal-style authentication UI. Include the following in the PRD’s Problem Statement, Requirements, and Acceptance Criteria.
+
+### Known Issues to Address
+- Duplicated success/error messages: global status banner and in-window alert render simultaneously; nested `.terminal-success`/`.terminal-error` elements produce repeated labels ("SUCCESS:" twice).
+- Insufficient window padding: terminal window hugs viewport edges on large screens; content feels cramped.
+- Vertical alignment: window should center on tall viewports but start at top and scroll when content exceeds the viewport.
+
+### Requirements (add to PRD)
+- Single-source flash rendering: exactly one message per type (`notice`, `alert`, `error`) visible at a time. Consolidate duplicates into one component.
+- Message component contract:
+  - Container classes: `.terminal-success`, `.terminal-error` apply the labeled prefix via CSS `::before`.
+  - Icon classes must not inherit labels. Use `.terminal-icon--success`/`--error` for glyphs instead of nesting `.terminal-success` inside another `.terminal-success`.
+- Layout spacing: terminal page gets balanced padding (`padding-top`/`bottom` ≥ 48px on md+; ≥ 24px on sm). Terminal window keeps horizontal margin (`16–24px`).
+- Vertical alignment: center via flex when content height ≤ viewport; otherwise top-align with natural scroll. No content cropping.
+- Scope of status: the header auth status should not duplicate in-window alerts on the same route.
+
+### Acceptance Criteria (example)
+- When authenticated, dashboard shows one success message within the terminal window; no extra banner appears simultaneously.
+- When unauthenticated, login shows one error message at a time.
+- No view renders two visible "SUCCESS:" or "ERROR:" labels.
+- On 1440×900 and larger, the window has ≥ 48px vertical padding and is visually centered; on mobile the window starts near the top with comfortable margins.
+
+### Implementation Notes (guidance for the PRD)
+- Introduce a shared flash partial (e.g., `app/views/shared/_flash.html.erb`) used by all pages; hide the header banner when page-level flash is present.
+- Split CSS: keep label prefixes on the container only; create `.terminal-icon--success`/`--error` for inline icons so icons don’t trigger label `::before`.
+- Adjust `.terminal-page` to `min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 48px 16px;` with responsive reductions on small screens.
+
+Example usage:
+```
+create-prd auth-ui-polish "Fix duplicated messages, padding, vertical alignment"
+```

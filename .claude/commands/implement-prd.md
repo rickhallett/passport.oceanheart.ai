@@ -32,6 +32,13 @@ Extract tasks from PRD and break down into:
 - Dependencies between tasks
 - **Phase organization** (no timeline estimates - organize by logical sequence only)
 
+### UI/UX Auth Preset Tasks (example: auth-ui-polish)
+- CSS structure: add `.terminal-icon`, `.terminal-icon--success`, `.terminal-icon--error`; keep labels on container classes only.
+- Page layout: update `.terminal-page` to use flex, top-align by default, responsive `py-12 md:py-16`, optional `.centered` modifier for md+.
+- Layout logic: in `application.html.erb`, render `shared/auth_status` unless `content_for?(:suppress_auth_status)` or `flash.any?`.
+- Views: in pages with in-window messages (dashboard, login), set `content_for :suppress_auth_status, true` and replace nested success/error classes with icon classes.
+- Verification: sign-in/sign-out flows show a single message; window centered on md+; adequate padding on all breakpoints.
+
 ### 3. Anti-Over-Engineering Guidelines
 - Implement minimum viable solution first
 - Avoid premature optimization
