@@ -4,10 +4,10 @@ class User < ApplicationRecord
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
   
-  enum role: { user: 'user', admin: 'admin' }
+  enum :role, { user: 'user', admin: 'admin' }
   
   def admin?
-    role == 'admin'
+    role == "admin"
   end
   
   def generate_jwt
