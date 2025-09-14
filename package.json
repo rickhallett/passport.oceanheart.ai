@@ -1,0 +1,24 @@
+{
+  "name": "passport-oceanheart",
+  "version": "1.0.0",
+  "description": "Modern authentication platform with glass morphism UI",
+  "main": "app/javascript/application.js",
+  "scripts": {
+    "build": "esbuild app/javascript/*.* --bundle --outdir=app/assets/builds --public-path=/assets",
+    "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/tailwind.css --watch",
+    "build:css:dev": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/tailwind.css"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.10",
+    "autoprefixer": "^10.4.16",
+    "esbuild": "^0.19.8",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.3.6"
+  },
+  "dependencies": {
+    "framer-motion": "^10.16.16",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^2.2.0"
+  }
+}
