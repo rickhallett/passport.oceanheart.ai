@@ -1,18 +1,19 @@
-/* Terminal Authentication Styling */
+/* Clean Terminal Authentication Styling */
 
-/* Monochrome theme tokens */
+/* Clean minimal theme tokens */
 :root {
-  --term-bg: #000000;
-  --term-fg: #d0d0d0;
-  --term-fg-strong: #ffffff;
-  --term-muted: #888888;
-  --term-border: #333333;
-  --term-panel: #000000;
-  --term-shadow: rgba(255, 255, 255, 0.08);
-  --term-bg-accent: rgba(255, 255, 255, 0.06);
+  --term-bg: #ffffff;
+  --term-fg: #333333;
+  --term-fg-strong: #000000;
+  --term-muted: #666666;
+  --term-border: #e0e0e0;
+  --term-panel: #ffffff;
+  --term-shadow: rgba(0, 0, 0, 0.08);
+  --term-bg-accent: rgba(0, 0, 0, 0.03);
+  --term-hover: #f5f5f5;
 }
 
-/* Ensure pure black backgrounds */
+/* Ensure clean white backgrounds */
 html, body {
   background-color: var(--term-bg) !important;
   margin: 0;
@@ -41,23 +42,29 @@ html, body {
 /* Core Terminal Window */
 .terminal-window {
   background: var(--term-panel);
-  border: 2px solid var(--term-border);
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
-  border-radius: 8px;
-  box-shadow: 0 0 20px var(--term-shadow);
+  border: 1px solid var(--term-border);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px var(--term-shadow);
   width: 100%;
   max-width: 600px;
   margin: 0 auto;
+  overflow-x: auto;
+}
+
+/* Admin pages need wider terminal windows */
+.admin-page .terminal-window {
+  max-width: 1200px;
 }
 
 /* Terminal Header with Window Controls */
 .terminal-header {
-  background: #1e1e1e;
+  background: #f8f9fa;
   border-bottom: 1px solid var(--term-border);
-  padding: 12px 16px;
+  padding: 16px 20px;
   display: flex;
   align-items: center;
-  border-radius: 6px 6px 0 0;
+  border-radius: 11px 11px 0 0;
 }
 
 .terminal-controls {
@@ -73,31 +80,34 @@ html, body {
   cursor: pointer;
 }
 
-.terminal-control.close { background: #666666; }
-.terminal-control.minimize { background: #888888; }
-.terminal-control.maximize { background: #aaaaaa; }
+.terminal-control.close { background: #ff5f57; }
+.terminal-control.minimize { background: #ffbd2e; }
+.terminal-control.maximize { background: #28ca42; }
 
 .terminal-title {
   color: var(--term-muted);
-  font-size: 12px;
+  font-size: 14px;
   margin-left: 16px;
-  font-weight: normal;
+  font-weight: 500;
 }
 
 /* Terminal Content Area */
 .terminal-content {
   background: var(--term-panel);
   color: var(--term-fg);
-  padding: 24px;
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
-  line-height: 1.4;
-  border-radius: 0 0 6px 6px;
+  padding: 32px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  line-height: 1.6;
+  border-radius: 0 0 11px 11px;
 }
 
 /* Terminal Prompt */
 .terminal-prompt {
   color: var(--term-fg);
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+  font-size: 15px;
+  font-weight: 500;
 }
 
 .terminal-prompt::before {
@@ -108,19 +118,21 @@ html, body {
 /* Terminal Input Fields */
 .terminal-input {
   background: var(--term-panel);
-  border: 1px solid var(--term-fg);
+  border: 1px solid var(--term-border);
   color: var(--term-fg);
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
   padding: 8px 12px;
   width: 100%;
-  border-radius: 2px;
+  border-radius: 6px;
   outline: none;
-  transition: border-color 0.2s ease;
+  transition: all 0.2s ease;
+  font-size: 14px;
 }
 
 .terminal-input:focus {
-  border-color: var(--term-fg-strong);
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
+  border-color: var(--term-fg);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+  background: var(--term-bg);
 }
 
 .terminal-input::placeholder {
@@ -129,11 +141,12 @@ html, body {
 
 /* Terminal Labels */
 .terminal-label {
-  color: var(--term-fg);
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
+  color: var(--term-fg-strong);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
   display: block;
-  margin-bottom: 6px;
-  font-size: 14px;
+  margin-bottom: 8px;
+  font-size: 15px;
+  font-weight: 500;
 }
 
 .terminal-label::after {
@@ -142,16 +155,18 @@ html, body {
 
 /* Terminal Buttons */
 .terminal-button {
-  background: var(--term-panel);
-  border: 1px solid var(--term-fg);
-  color: var(--term-fg);
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
-  padding: 8px 16px;
+  background: var(--term-fg-strong);
+  border: 1px solid var(--term-fg-strong);
+  color: var(--term-panel);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  padding: 6px 12px;
   cursor: pointer;
   transition: all 0.2s ease;
   text-transform: uppercase;
-  border-radius: 2px;
-  font-weight: normal;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.3px;
 }
 
 .terminal-button::before {
@@ -160,20 +175,22 @@ html, body {
 
 .terminal-button:hover {
   background: var(--term-fg);
-  color: var(--term-bg);
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .terminal-button:active {
-  background: #bbbbbb;
+  background: var(--term-fg);
+  transform: translateY(0);
 }
 
 /* Terminal Links */
 .terminal-link {
   color: var(--term-fg);
   text-decoration: underline;
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
   transition: color 0.2s ease;
+  font-weight: 500;
 }
 
 .terminal-link::before {
@@ -194,6 +211,7 @@ html, body {
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .terminal-modal.open { display: flex; }
@@ -201,56 +219,70 @@ html, body {
 .terminal-modal-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(255,255,255,0.05);
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .terminal-modal-window {
   position: relative;
   background: var(--term-panel);
   border: 1px solid var(--term-border);
-  box-shadow: 0 0 20px var(--term-shadow);
+  box-shadow: 0 20px 40px var(--term-shadow);
   width: 90%;
   max-width: 420px;
-  border-radius: 6px;
+  border-radius: 12px;
 }
 
 .terminal-modal-header {
-  padding: 12px 16px;
+  padding: 20px 24px;
   border-bottom: 1px solid var(--term-border);
-  color: var(--term-muted);
+  color: var(--term-fg-strong);
+  font-weight: 600;
 }
 
-.terminal-modal-body { padding: 16px; color: var(--term-fg); }
-.terminal-modal-actions { padding: 12px 16px; display: flex; gap: 8px; justify-content: flex-end; }
+.terminal-modal-body { 
+  padding: 24px; 
+  color: var(--term-fg); 
+  line-height: 1.6;
+}
+
+.terminal-modal-actions { 
+  padding: 20px 24px; 
+  display: flex; 
+  gap: 12px; 
+  justify-content: flex-end; 
+}
 
 /* Terminal Navigation */
 .terminal-nav {
   border-bottom: 1px solid var(--term-border);
-  padding: 12px 16px;
+  padding: 16px 24px;
   display: flex;
-  gap: 16px;
+  gap: 20px;
   align-items: center;
+  background: var(--term-hover);
 }
 
 .terminal-nav-item {
-  color: var(--term-muted);
+  color: var(--term-fg);
   text-decoration: none;
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
-  font-size: 14px;
-  padding: 4px 8px;
-  border-radius: 2px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  font-size: 15px;
+  padding: 8px 12px;
+  border-radius: 6px;
   transition: all 0.2s ease;
   position: relative;
+  font-weight: 500;
 }
 
 .terminal-nav-item:hover {
-  color: var(--term-fg);
+  color: var(--term-fg-strong);
   background: var(--term-bg-accent);
 }
 
 .terminal-nav-item.active {
   color: var(--term-fg-strong);
   background: var(--term-bg-accent);
+  border-bottom: 2px solid var(--term-fg);
 }
 
 .terminal-nav-item.active::before {
@@ -287,18 +319,19 @@ html, body {
 .terminal-breadcrumb {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 0;
+  gap: 12px;
+  padding: 12px 0;
   border-bottom: 1px solid var(--term-border);
-  margin-bottom: 16px;
-  font-size: 14px;
+  margin-bottom: 20px;
+  font-size: 15px;
 }
 
 .terminal-breadcrumb-item {
   color: var(--term-muted);
   text-decoration: none;
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
   transition: color 0.2s ease;
+  font-weight: 500;
 }
 
 .terminal-breadcrumb-item:hover {
@@ -320,7 +353,7 @@ html, body {
 
 /* Terminal Content Padding */
 .terminal-content {
-  padding: 16px 20px;
+  padding: 24px 32px;
 }
 
 /* Main Application Layout */
@@ -334,9 +367,9 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 20px;
+  padding: 16px 24px;
   border-bottom: 1px solid var(--term-border);
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   background: var(--term-bg);
   position: sticky;
   top: 0;
@@ -345,19 +378,20 @@ html, body {
 
 .main-nav {
   display: flex;
-  gap: 24px;
+  gap: 32px;
   align-items: center;
 }
 
 .nav-item {
   color: var(--term-fg);
   text-decoration: none;
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
-  font-size: 14px;
-  padding: 6px 12px;
-  border-radius: 2px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  font-size: 15px;
+  padding: 8px 16px;
+  border-radius: 6px;
   transition: all 0.2s ease;
   position: relative;
+  font-weight: 500;
 }
 
 .nav-item:hover {
@@ -384,8 +418,8 @@ html, body {
 /* Auth Status */
 .auth-status {
   color: var(--term-muted);
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
-  font-size: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  font-size: 15px;
 }
 
 .auth-status strong {
@@ -399,14 +433,14 @@ html, body {
 .auth-status-button {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   background: transparent;
   border: 1px solid var(--term-border);
   color: var(--term-fg);
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
-  font-size: 14px;
-  padding: 6px 12px;
-  border-radius: 2px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  font-size: 15px;
+  padding: 8px 16px;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -419,14 +453,14 @@ html, body {
 .auth-avatar {
   background: var(--term-fg);
   color: var(--term-bg);
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  font-weight: bold;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .auth-email {
@@ -441,18 +475,18 @@ html, body {
 
 .dropdown-item-header {
   color: var(--term-fg-strong);
-  font-weight: bold;
-  padding: 8px 16px;
+  font-weight: 600;
+  padding: 12px 20px;
   border-bottom: 1px solid var(--term-border);
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
-  font-size: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  font-size: 13px;
 }
 
 .dropdown-item-text {
   color: var(--term-fg);
-  padding: 4px 16px;
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
-  font-size: 12px;
+  padding: 8px 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  font-size: 13px;
 }
 
 .dropdown-item-text.muted {
@@ -468,7 +502,7 @@ html, body {
 .dropdown-toggle {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .dropdown-caret {
@@ -488,11 +522,11 @@ html, body {
   left: 0;
   background: var(--term-panel);
   border: 1px solid var(--term-border);
-  border-radius: 2px;
-  box-shadow: 0 4px 12px var(--term-shadow);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px var(--term-shadow);
   min-width: 160px;
   z-index: 1000;
-  margin-top: 4px;
+  margin-top: 8px;
 }
 
 .dropdown.open .dropdown-content {
@@ -503,9 +537,9 @@ html, body {
   display: block;
   color: var(--term-fg);
   text-decoration: none;
-  padding: 8px 16px;
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
-  font-size: 14px;
+  padding: 12px 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  font-size: 15px;
   transition: background-color 0.2s ease;
   border: none;
   background: none;
@@ -517,8 +551,8 @@ html, body {
 
 .dropdown-item:focus {
   background: var(--term-bg-accent);
-  outline: 1px solid var(--term-fg);
-  outline-offset: -1px;
+  outline: 2px solid var(--term-fg);
+  outline-offset: -2px;
 }
 
 .dropdown-item:hover {
@@ -535,61 +569,46 @@ html, body {
   background: none;
 }
 
-.dropdown-item.disabled[title]:hover::after {
-  content: attr(title);
-  position: absolute;
-  left: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--term-panel);
-  color: var(--term-fg);
-  padding: 4px 8px;
-  border: 1px solid var(--term-border);
-  border-radius: 2px;
-  font-size: 12px;
-  white-space: nowrap;
-  z-index: 1001;
-  margin-left: 8px;
-}
-
 .dropdown-divider {
   height: 1px;
   background: var(--term-border);
-  margin: 4px 0;
+  margin: 8px 0;
 }
 
 /* Terminal Error Messages */
 .terminal-error {
-  background: var(--term-bg-accent);
-  border: 1px solid var(--term-fg);
-  color: var(--term-fg-strong);
-  padding: 12px;
-  margin: 16px 0;
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
-  border-radius: 2px;
+  background: #fff5f5;
+  border: 1px solid #feb2b2;
+  color: #c53030;
+  padding: 16px;
+  margin: 20px 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  border-radius: 8px;
+  line-height: 1.5;
 }
 
 .terminal-error::before {
   content: "ERROR: ";
-  color: var(--term-fg-strong);
-  font-weight: bold;
+  color: #c53030;
+  font-weight: 600;
 }
 
 /* Terminal Success Messages */
 .terminal-success {
-  background: var(--term-bg-accent);
-  border: 1px solid var(--term-fg);
-  color: var(--term-fg-strong);
-  padding: 12px;
-  margin: 16px 0;
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
-  border-radius: 2px;
+  background: #f0fff4;
+  border: 1px solid #9ae6b4;
+  color: #276749;
+  padding: 16px;
+  margin: 20px 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  border-radius: 8px;
+  line-height: 1.5;
 }
 
 .terminal-success::before {
   content: "SUCCESS: ";
-  color: var(--term-fg);
-  font-weight: bold;
+  color: #276749;
+  font-weight: 600;
 }
 
 /* Icons that do not carry the SUCCESS/ERROR labels */
@@ -598,8 +617,8 @@ html, body {
   margin-right: 8px;
 }
 
-.terminal-icon--success { color: var(--term-fg); }
-.terminal-icon--error { color: var(--term-fg-strong); }
+.terminal-icon--success { color: #276749; }
+.terminal-icon--error { color: #c53030; }
 
 /* Blinking Cursor Animation */
 .terminal-cursor {
@@ -613,8 +632,9 @@ html, body {
 
 .terminal-cursor::after {
   content: "_";
-  color: var(--term-fg);
+  color: var(--term-muted);
   animation: blink 1s infinite;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
 }
 
 /* Responsive Design */
@@ -626,7 +646,7 @@ html, body {
   }
   
   .terminal-content {
-    padding: 32px;
+    padding: 40px;
   }
 }
 
@@ -653,7 +673,7 @@ html, body {
   }
   
   .terminal-content {
-    padding: 20px;
+    padding: 24px;
   }
 }
 
@@ -661,20 +681,20 @@ html, body {
 @media (max-width: 575px) {
   .terminal-window {
     margin: 12px;
-    border-radius: 6px;
+    border-radius: 8px;
     max-width: calc(100% - 24px);
   }
   
   .terminal-content {
-    padding: 16px;
+    padding: 20px;
   }
   
   .terminal-header {
-    padding: 8px 12px;
+    padding: 12px 16px;
   }
   
   .terminal-title {
-    font-size: 10px;
+    font-size: 12px;
     margin-left: 8px;
   }
   
@@ -691,59 +711,68 @@ html, body {
 /* Terminal Text Styling */
 .terminal-text {
   color: var(--term-fg);
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  line-height: 1.6;
 }
 
 .terminal-text-muted {
   color: var(--term-muted);
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  line-height: 1.6;
 }
 
 /* Form Spacing */
 .terminal-form {
-  space-y: 16px;
+  space-y: 20px;
 }
 
 .terminal-form > div {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 /* Terminal Divider */
 .terminal-divider {
   border-top: 1px solid var(--term-border);
-  margin: 24px 0;
+  margin: 32px 0;
 }
 
 /* Secondary Buttons */
 .terminal-button-secondary {
   background: transparent;
-  border: 1px solid #666666;
-  color: #888888;
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
-  padding: 8px 16px;
+  border: 1px solid var(--term-border);
+  color: var(--term-fg);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  padding: 4px 10px;
   cursor: pointer;
   transition: all 0.2s ease;
-  border-radius: 2px;
+  border-radius: 4px;
   text-decoration: none;
   display: inline-block;
+  font-weight: 500;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 .terminal-button-secondary:hover {
-  color: var(--term-fg);
+  color: var(--term-fg-strong);
   border-color: var(--term-fg);
+  background: var(--term-bg-accent);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 /* API Documentation Styles */
 .api-routes-tree {
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
 }
 
 .api-controls {
   background: var(--term-bg-accent);
   border: 1px solid var(--term-border);
-  border-radius: 4px;
-  padding: 16px;
-  margin-bottom: 20px;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
 }
 
 /* Filter Chips */
@@ -751,13 +780,14 @@ html, body {
   background: transparent;
   border: 1px solid var(--term-border);
   color: var(--term-muted);
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
-  font-size: 12px;
-  padding: 4px 8px;
-  border-radius: 2px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 16px;
   cursor: pointer;
   transition: all 0.2s ease;
   text-transform: uppercase;
+  font-weight: 500;
 }
 
 .filter-chip:hover {
@@ -774,25 +804,26 @@ html, body {
 /* Collapsible Sections */
 .collapsible-section {
   border: 1px solid var(--term-border);
-  border-radius: 4px;
-  margin-bottom: 8px;
+  border-radius: 8px;
+  margin-bottom: 12px;
   background: var(--term-panel);
 }
 
 .collapsible-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
+  gap: 12px;
+  padding: 16px 20px;
   cursor: pointer;
   background: var(--term-bg-accent);
   border-bottom: 1px solid var(--term-border);
   transition: background-color 0.2s ease;
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  font-weight: 500;
 }
 
 .collapsible-header:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--term-hover);
 }
 
 .collapsible-header[aria-expanded="true"] {
@@ -817,7 +848,7 @@ html, body {
 
 .route-title {
   color: var(--term-fg-strong);
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .route-count {
@@ -827,7 +858,7 @@ html, body {
 }
 
 .collapsible-content {
-  padding: 16px;
+  padding: 20px;
   border-top: 1px solid var(--term-border);
 }
 
@@ -838,7 +869,7 @@ html, body {
   gap: 8px;
   background: var(--term-panel);
   border: 1px solid var(--term-border);
-  border-radius: 4px;
+  border-radius: 8px;
   overflow: hidden;
 }
 
@@ -847,8 +878,8 @@ html, body {
 }
 
 .api-grid-cell {
-  padding: 8px 12px;
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
+  padding: 12px 16px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
   font-size: 14px;
   color: var(--term-fg);
   border-right: 1px solid var(--term-border);
@@ -861,8 +892,8 @@ html, body {
 .api-grid-cell.header {
   background: var(--term-bg-accent);
   color: var(--term-fg-strong);
-  font-weight: bold;
-  font-size: 12px;
+  font-weight: 600;
+  font-size: 13px;
   border-bottom: 1px solid var(--term-border);
 }
 
@@ -884,49 +915,44 @@ html, body {
 
 .method-badge {
   font-size: 11px;
-  font-weight: bold;
-  padding: 2px 6px;
-  border-radius: 2px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
   display: inline-block;
   min-width: 50px;
   text-align: center;
+  color: white;
 }
 
 .method-get .method-badge {
-  background: #16a34a;
-  color: white;
+  background: #10b981;
 }
 
 .method-post .method-badge {
-  background: #2563eb;
-  color: white;
+  background: #3b82f6;
 }
 
 .method-put .method-badge {
-  background: #ca8a04;
-  color: white;
+  background: #f59e0b;
 }
 
 .method-delete .method-badge {
-  background: #dc2626;
-  color: white;
+  background: #ef4444;
 }
 
 .method-other .method-badge {
   background: var(--term-muted);
-  color: white;
 }
 
 .api-grid-cell.path {
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
   word-break: break-all;
+  font-size: 13px;
 }
-
-
 
 .api-grid-cell.actions {
   display: flex;
-  gap: 4px;
+  gap: 8px;
 }
 
 /* Copy Buttons */
@@ -934,13 +960,14 @@ html, body {
   background: transparent;
   border: 1px solid var(--term-border);
   color: var(--term-muted);
-  font-family: 'Courier New', Monaco, 'Lucida Console', monospace;
-  font-size: 10px;
-  padding: 2px 6px;
-  border-radius: 2px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
   text-transform: uppercase;
+  font-weight: 500;
 }
 
 .copy-button:hover {
@@ -956,10 +983,10 @@ html, body {
 
 /* Search Highlighting */
 .search-highlight {
-  background: #fbbf24;
+  background: #fef08a;
   color: #000;
-  padding: 1px 2px;
-  border-radius: 2px;
+  padding: 2px 4px;
+  border-radius: 4px;
 }
 
 /* Responsive API Grid */
@@ -970,25 +997,9 @@ html, body {
   }
   
   .copy-button {
-    font-size: 8px;
-    padding: 1px 4px;
+    font-size: 9px;
+    padding: 2px 6px;
   }
-}
-
-/* Section Type Styling */
-.namespace-section .collapsible-header {
-  background: var(--term-bg-accent);
-  border-left: 4px solid #059669;
-}
-
-.controller-section .collapsible-header {
-  background: var(--term-bg-accent);
-  border-left: 4px solid #2563eb;
-}
-
-.action-section .collapsible-header {
-  background: var(--term-bg-accent);
-  border-left: 4px solid #ca8a04;
 }
 
 /* Hotwire/Turbo Animation Effects */
@@ -1016,10 +1027,49 @@ html, body {
 }
 
 .status-error {
-  color: var(--term-fg-strong);
+  color: #c53030;
   animation: blink 1s infinite;
 }
 
 .status-success {
+  color: #276749;
+}
+
+/* Modern table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  background: var(--term-panel);
+  border: 1px solid var(--term-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+thead {
+  background: var(--term-bg-accent);
+}
+
+th {
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
   color: var(--term-fg-strong);
+  font-size: 13px;
+  border-bottom: 1px solid var(--term-border);
+}
+
+td {
+  padding: 10px 12px;
+  color: var(--term-fg);
+  border-bottom: 1px solid var(--term-border);
+  font-size: 13px;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr:hover {
+  background: var(--term-hover);
 }
