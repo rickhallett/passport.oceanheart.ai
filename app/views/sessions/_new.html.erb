@@ -20,6 +20,9 @@
         turbo_frame: "authentication",
         action: "turbo:submit-end->auth#handleResponse"
       } do |form| %>
+    <% if @return_to.present? %>
+      <%= form.hidden_field :returnTo, value: @return_to %>
+    <% end %>
     <div>
       <label for="email_address" class="terminal-label">
         Email Address
