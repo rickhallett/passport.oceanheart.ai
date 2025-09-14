@@ -13,10 +13,11 @@ class User < ApplicationRecord
   def generate_jwt
     JWT.encode(
       { 
-        user_id: id, 
+        userId: id, 
         email: email_address, 
         exp: 1.week.from_now.to_i,
-        iat: Time.current.to_i
+        iat: Time.current.to_i,
+        iss: 'passport.oceanheart.ai'
       },
       Rails.application.credentials.secret_key_base,
       'HS256'
@@ -31,7 +32,9 @@ class User < ApplicationRecord
         true,
         algorithm: 'HS256'
       )[0]
-      find(payload['user_id'])
+      # Support both old and new payload format during migration
+      user_id = payload['userId'] || payload['user_id']
+      find(user_id)
     rescue JWT::DecodeError, JWT::ExpiredSignature, ActiveRecord::RecordNotFound
       nil
     end
