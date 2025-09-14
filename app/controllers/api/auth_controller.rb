@@ -2,11 +2,12 @@ class Api::AuthController < ApplicationController
   include JwtAuthentication
   
   skip_forgery_protection
-  allow_unauthenticated_access only: %i[ verify refresh ]
-  before_action :verify_jwt_api, only: %i[ user ]
+  allow_unauthenticated_access only: %i[ verify refresh signin ]
+  before_action :verify_jwt_api, only: %i[ user signout ]
 
   def verify
-    token = extract_jwt_token
+    # Accept token from request body or headers/cookies
+    token = params[:token] || extract_jwt_token
     return render_unauthorized unless token
 
     user = User.decode_jwt(token)
@@ -14,8 +15,9 @@ class Api::AuthController < ApplicationController
       render json: { 
         valid: true, 
         user: { 
-          id: user.id, 
-          email: user.email_address 
+          userId: user.id, 
+          email: user.email_address,
+          role: user.role
         } 
       }
     else
@@ -24,17 +26,19 @@ class Api::AuthController < ApplicationController
   end
 
   def refresh
-    token = extract_jwt_token
+    token = params[:token] || extract_jwt_token
     return render_unauthorized unless token
 
     user = User.decode_jwt(token)
     if user
       new_token = set_jwt_cookie(user)
       render json: { 
+        success: true,
         token: new_token,
         user: { 
-          id: user.id, 
-          email: user.email_address 
+          userId: user.id, 
+          email: user.email_address,
+          role: user.role
         }
       }
     else
@@ -42,11 +46,45 @@ class Api::AuthController < ApplicationController
     end
   end
 
+  def signin
+    user = User.authenticate_by(
+      email_address: params[:email], 
+      password: params[:password]
+    )
+    
+    if user
+      token = set_jwt_cookie(user)
+      render json: { 
+        success: true,
+        token: token,
+        user: { 
+          userId: user.id, 
+          email: user.email_address,
+          role: user.role
+        }
+      }
+    else
+      render json: { 
+        success: false,
+        error: "Invalid email or password" 
+      }, status: :unauthorized
+    end
+  end
+
+  def signout
+    clear_jwt_cookie
+    render json: { 
+      success: true,
+      message: "Successfully signed out" 
+    }
+  end
+
   def user
     render json: { 
       user: { 
-        id: @current_user.id, 
-        email: @current_user.email_address 
+        userId: @current_user.id, 
+        email: @current_user.email_address,
+        role: @current_user.role
       } 
     }
   end

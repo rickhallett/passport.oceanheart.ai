@@ -14,8 +14,10 @@ Rails.application.routes.draw do
   
   # API routes for cross-domain authentication
   namespace :api do
-    get 'auth/verify', to: 'auth#verify'
+    post 'auth/verify', to: 'auth#verify'
     post 'auth/refresh', to: 'auth#refresh'
+    post 'auth/signin', to: 'auth#signin'
+    delete 'auth/signout', to: 'auth#signout'
     get 'auth/user', to: 'auth#user'
   end
 
