@@ -49,3 +49,28 @@
 # Ignore Docker-related files
 /.dockerignore
 /Dockerfile*
+/docker-compose*.yml
+
+# Ignore test files
+/test/
+/spec/
+/coverage/
+.rspec
+
+# Ignore documentation
+/docs/
+*.md
+!README.md
+
+# Ignore misc files
+.DS_Store
+.byebug_history
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Ignore local scripts
+/test/*.sh
+/bin/setup-subdomains

@@ -1,0 +1,107 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: passport_postgres
+    environment:
+      POSTGRES_USER: passport
+      POSTGRES_PASSWORD: passport_dev_password
+      POSTGRES_DB: passport_development
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U passport"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - passport_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: passport_redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - passport_network
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: passport_web
+    stdin_open: true
+    tty: true
+    environment:
+      DATABASE_URL: postgresql://passport:passport_dev_password@postgres:5432/passport_development
+      REDIS_URL: redis://redis:6379/0
+      RAILS_ENV: development
+      COOKIE_DOMAIN: .lvh.me
+      # Development secrets (replace with your own)
+      SECRET_KEY_BASE: development_secret_key_base_at_least_128_chars_long_1234567890abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqrstuvwxyz
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY:-}
+    volumes:
+      - .:/rails:cached
+      - bundle_cache:/usr/local/bundle
+      - node_modules:/rails/node_modules
+      - rails_cache:/rails/tmp/cache
+    ports:
+      - "5555:5555"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - passport_network
+    command: >
+      bash -c "
+        rm -f tmp/pids/server.pid &&
+        bundle check || bundle install &&
+        bundle exec rails db:prepare &&
+        bundle exec rails server -b 0.0.0.0 -p 5555
+      "
+
+  # Optional: Background job processor (if using Sidekiq/DelayedJob)
+  # worker:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     target: development
+  #   container_name: passport_worker
+  #   environment:
+  #     DATABASE_URL: postgresql://passport:passport_dev_password@postgres:5432/passport_development
+  #     REDIS_URL: redis://redis:6379/0
+  #     RAILS_ENV: development
+  #   volumes:
+  #     - .:/rails:cached
+  #     - bundle_cache:/usr/local/bundle
+  #   depends_on:
+  #     - postgres
+  #     - redis
+  #   networks:
+  #     - passport_network
+  #   command: bundle exec sidekiq
+
+volumes:
+  postgres_data:
+  redis_data:
+  bundle_cache:
+  node_modules:
+  rails_cache:
+
+networks:
+  passport_network:
+    driver: bridge

@@ -24,7 +24,8 @@
       </div>
       
       <div class="text-center mb-6">
-        <%= link_to "CONTINUE TO DASHBOARD", root_path, 
+        <%= link_to "CONTINUE TO DASHBOARD", 
+            current_user&.admin? ? admin_root_path : root_path, 
             class: "terminal-button w-full" %>
       </div>
       

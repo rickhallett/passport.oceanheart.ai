@@ -6,10 +6,23 @@
   <div class="terminal-text mb-4" data-auth-target="status">Connected</div>
   
   <div class="terminal-form">
-    <div class="text-center">
-      <%= link_to "CONTINUE TO DASHBOARD", root_path, 
-          class: "terminal-button w-full" %>
-    </div>
+    <% return_to = params[:returnTo] || session[:return_to] %>
+    <% if return_to.present? %>
+      <div class="terminal-text mb-4 text-center">
+        Redirecting you back to the application...
+      </div>
+      <script>
+        setTimeout(() => {
+          window.location.href = '<%= j return_to %>';
+        }, 1500);
+      </script>
+    <% else %>
+      <div class="text-center">
+        <%= link_to "CONTINUE TO DASHBOARD", 
+            user.admin? ? admin_root_path : root_path, 
+            class: "terminal-button w-full" %>
+      </div>
+    <% end %>
     
     <div class="text-center mt-4">
       <%= link_to "SIGN OUT", sign_out_path, 

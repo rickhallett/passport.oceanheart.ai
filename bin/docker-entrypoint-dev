@@ -1,0 +1,30 @@
+#!/bin/bash
+set -e
+
+# Development Docker Entrypoint
+# This script sets up the development environment
+
+echo "Starting Oceanheart Passport in development mode..."
+
+# Remove any existing server pid file
+rm -f /rails/tmp/pids/server.pid
+
+# Check if database exists, create if not
+if ! bundle exec rails db:exists 2>/dev/null; then
+  echo "Creating database..."
+  bundle exec rails db:create
+fi
+
+# Run migrations
+echo "Running database migrations..."
+bundle exec rails db:migrate
+
+# Seed database if empty
+if [ "$(bundle exec rails runner 'puts User.count')" = "0" ]; then
+  echo "Seeding database..."
+  bundle exec rails db:seed
+fi
+
+# Start the Rails server
+echo "Starting Rails server on port 5555..."
+exec "${@}"

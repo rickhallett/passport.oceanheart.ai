@@ -1,0 +1,153 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: passport_postgres_prod
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER:-passport}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME:-passport_production}
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-passport}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - passport_prod_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  redis:
+    image: redis:7-alpine
+    container_name: passport_redis_prod
+    restart: always
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_prod_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - passport_prod_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    image: passport-oceanheart:latest
+    container_name: passport_web_prod
+    restart: always
+    environment:
+      DATABASE_URL: postgresql://${DB_USER:-passport}:${DB_PASSWORD}@postgres:5432/${DB_NAME:-passport_production}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      RAILS_ENV: production
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      COOKIE_DOMAIN: .oceanheart.ai
+      RAILS_LOG_TO_STDOUT: "true"
+      RAILS_SERVE_STATIC_FILES: "true"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - passport_prod_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "10"
+
+  nginx:
+    image: nginx:alpine
+    container_name: passport_nginx_prod
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/nginx/sites:/etc/nginx/sites-enabled:ro
+      - ./docker/nginx/ssl:/etc/nginx/ssl:ro
+      - nginx_cache:/var/cache/nginx
+      # Let's Encrypt certificates
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
+    depends_on:
+      - web
+    networks:
+      - passport_prod_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Certbot for SSL certificates
+  certbot:
+    image: certbot/certbot
+    container_name: passport_certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    networks:
+      - passport_prod_network
+
+  # Optional: Background job processor
+  # worker:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     target: production
+  #   image: passport-oceanheart:latest
+  #   container_name: passport_worker_prod
+  #   restart: always
+  #   environment:
+  #     DATABASE_URL: postgresql://${DB_USER:-passport}:${DB_PASSWORD}@postgres:5432/${DB_NAME:-passport_production}
+  #     REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+  #     RAILS_ENV: production
+  #     RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+  #     SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+  #   depends_on:
+  #     - postgres
+  #     - redis
+  #   networks:
+  #     - passport_prod_network
+  #   command: bundle exec sidekiq
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-size: "50m"
+  #       max-file: "10"
+
+volumes:
+  postgres_prod_data:
+    driver: local
+  redis_prod_data:
+    driver: local
+  nginx_cache:
+    driver: local
+
+networks:
+  passport_prod_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16
