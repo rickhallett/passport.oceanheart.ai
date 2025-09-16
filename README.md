@@ -228,7 +228,268 @@ The application uses standard Rails authentication with:
 - **Web Controller**: `app/controllers/sessions_controller.rb`
 - **Admin Interface**: `app/controllers/admin/`
 
-## Deployment
+## Docker Deployment
+
+### Quick Start with Docker
+
+#### Development with Docker Compose
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/rickhallett/passport.oceanheart.ai.git
+   cd passport.oceanheart.ai
+   ```
+
+2. **Start the development environment**
+   ```bash
+   docker-compose up -d
+   ```
+
+3. **Check service health**
+   ```bash
+   docker-compose ps
+   docker-compose logs -f web
+   ```
+
+4. **Create test user**
+   ```bash
+   docker-compose exec web ./test/create-test-user.sh
+   ```
+
+5. **Access the application**
+   - Web UI: http://passport.lvh.me:5555
+   - API: http://passport.lvh.me:5555/api/auth
+
+#### Production Deployment
+
+1. **Prepare environment file**
+   ```bash
+   cp .env.example .env.production
+   # Edit .env.production with your production values:
+   # DB_PASSWORD=secure_database_password
+   # REDIS_PASSWORD=secure_redis_password
+   # RAILS_MASTER_KEY=your_rails_master_key
+   # SECRET_KEY_BASE=your_secret_key_base
+   ```
+
+2. **Build production image**
+   ```bash
+   docker-compose -f docker-compose.production.yml build
+   ```
+
+3. **Deploy with Docker Compose**
+   ```bash
+   docker-compose -f docker-compose.production.yml up -d
+   ```
+
+4. **Initialize database**
+   ```bash
+   docker-compose -f docker-compose.production.yml exec web rails db:create db:migrate db:seed
+   ```
+
+5. **Setup SSL with Let's Encrypt**
+   ```bash
+   # Initial certificate generation
+   docker-compose -f docker-compose.production.yml run --rm certbot certonly \
+     --webroot -w /var/www/certbot \
+     -d passport.oceanheart.ai \
+     --email admin@oceanheart.ai \
+     --agree-tos \
+     --no-eff-email
+   ```
+
+### Docker Architecture
+
+#### Multi-Stage Build
+The Dockerfile uses multi-stage builds for optimized images:
+- **Base**: Minimal Ruby image with runtime dependencies
+- **Build**: Compilation tools for native gems
+- **Development**: Full development environment with all gems
+- **Production**: Optimized production image with minimal footprint
+
+#### Service Stack
+
+##### Development Environment
+- **PostgreSQL 16**: Database with persistent volume
+- **Redis 7**: Session store and cache
+- **Rails App**: Development server with hot reload
+- **Volumes**: Code syncing, gem caching, node modules
+
+##### Production Environment
+- **PostgreSQL 16**: High-availability database
+- **Redis 7**: Secured with password authentication
+- **Rails App**: Production-optimized Puma server
+- **Nginx**: Reverse proxy with SSL termination
+- **Certbot**: Automatic SSL certificate renewal
+
+### Container Configuration
+
+#### Health Checks
+All services include health checks for orchestration:
+
+```yaml
+# PostgreSQL
+healthcheck:
+  test: ["CMD-SHELL", "pg_isready -U passport"]
+  interval: 30s
+  timeout: 10s
+  retries: 5
+
+# Redis
+healthcheck:
+  test: ["CMD", "redis-cli", "ping"]
+  interval: 30s
+  timeout: 10s
+  retries: 5
+
+# Rails App
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+  CMD curl -f http://localhost:5555/up || exit 1
+```
+
+#### Volume Management
+
+Development volumes:
+- `postgres_data`: Database persistence
+- `redis_data`: Redis persistence
+- `bundle_cache`: Gem cache for faster rebuilds
+- `node_modules`: JavaScript dependencies
+- `rails_cache`: Application cache
+
+Production volumes:
+- `postgres_prod_data`: Database persistence
+- `redis_prod_data`: Redis persistence with AOF
+- `nginx_cache`: HTTP cache
+- SSL certificates via bind mounts
+
+### Docker Commands Reference
+
+#### Development Commands
+
+```bash
+# Start all services
+docker-compose up -d
+
+# Stop all services
+docker-compose down
+
+# View logs
+docker-compose logs -f [service_name]
+
+# Execute commands in container
+docker-compose exec web bash
+docker-compose exec web rails console
+docker-compose exec web rails db:migrate
+
+# Rebuild after Gemfile changes
+docker-compose build web
+docker-compose up -d web
+
+# Reset database
+docker-compose exec web rails db:reset
+```
+
+#### Production Commands
+
+```bash
+# Deploy with production compose
+docker-compose -f docker-compose.production.yml up -d
+
+# Scale web workers
+docker-compose -f docker-compose.production.yml up -d --scale web=3
+
+# Backup database
+docker-compose -f docker-compose.production.yml exec postgres \
+  pg_dump -U passport passport_production > backup.sql
+
+# View production logs
+docker-compose -f docker-compose.production.yml logs -f --tail=100
+
+# Rolling update
+docker-compose -f docker-compose.production.yml build web
+docker-compose -f docker-compose.production.yml up -d --no-deps web
+```
+
+### Monitoring & Logging
+
+#### Log Management
+All containers use JSON file logging with rotation:
+```yaml
+logging:
+  driver: "json-file"
+  options:
+    max-size: "50m"
+    max-file: "10"
+```
+
+#### Health Monitoring
+Monitor service health:
+```bash
+# Check all service health
+docker-compose ps
+
+# Detailed health status
+docker inspect passport_web --format='{{.State.Health.Status}}'
+
+# Monitor resource usage
+docker stats
+```
+
+### Security Considerations
+
+#### Production Security
+- Non-root user execution (UID 1000)
+- Read-only filesystem where possible
+- Secret management via environment variables
+- Network isolation with custom bridge network
+- Redis password authentication
+- PostgreSQL secured connections
+- SSL/TLS termination at Nginx
+
+#### Environment Variables
+Never commit `.env` files. Use secrets management:
+```bash
+# Docker Swarm secrets
+echo "password" | docker secret create db_password -
+
+# Kubernetes secrets
+kubectl create secret generic passport-secrets \
+  --from-literal=db-password=yourpassword
+```
+
+### Troubleshooting
+
+#### Common Issues
+
+1. **Database connection errors**
+   ```bash
+   # Check PostgreSQL status
+   docker-compose logs postgres
+   # Verify network connectivity
+   docker-compose exec web ping postgres
+   ```
+
+2. **Permission errors**
+   ```bash
+   # Fix ownership in development
+   docker-compose exec web chown -R $(id -u):$(id -g) .
+   ```
+
+3. **Build failures**
+   ```bash
+   # Clean rebuild
+   docker-compose down -v
+   docker-compose build --no-cache
+   docker-compose up -d
+   ```
+
+4. **SSL certificate issues**
+   ```bash
+   # Renew certificates manually
+   docker-compose -f docker-compose.production.yml run --rm certbot renew
+   ```
+
+## Traditional Deployment
 
 ### Production Checklist
 

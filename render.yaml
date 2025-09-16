@@ -1,34 +1,55 @@
+databases:
+  - name: passport-postgres
+    databaseName: passport_production
+    user: passport
+    plan: free # Free tier - shared instance, 1GB storage
+    region: oregon # or your preferred region
+
 services:
   - type: web
-    name: oceanheart-auth
-    env: ruby
-    buildCommand: bundle install && rails db:migrate
-    startCommand: rails server -h 0.0.0.0 -p $PORT
+    name: passport-oceanheart
+    runtime: ruby
+    plan: free # Free tier - 512MB RAM, 0.1 CPU
+    region: oregon # should match database region
+    buildCommand: "./bin/render-build.sh"
+    startCommand: "bundle exec puma -C config/puma.rb"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: oceanheart-db
+          name: passport-postgres
           property: connectionString
-      - key: REDIS_URL
-        fromService:
-          name: oceanheart-redis
-          property: connectionString
+      - key: RAILS_MASTER_KEY
+        sync: false # Set this in Render dashboard for security
+      - key: WEB_CONCURRENCY
+        value: 1 # Reduced for free tier
+      - key: RAILS_MAX_THREADS
+        value: 3 # Reduced for free tier
       - key: RAILS_ENV
         value: production
+      - key: RAILS_LOG_TO_STDOUT
+        value: true
       - key: RAILS_SERVE_STATIC_FILES
         value: true
       - key: COOKIE_DOMAIN
         value: .oceanheart.ai
-      - key: AUTH_URL
-        value: https://oceanheart-auth.onrender.com
-    healthCheckPath: /up
-
-databases:
-  - name: oceanheart-db
-    databaseName: oceanheart_auth_production
-    plan: free
-
-services:
-  - type: redis
-    name: oceanheart-redis
-    plan: free
+      - key: JWT_SECRET
+        sync: false # Set this in Render dashboard for security
+      - key: SECRET_KEY_BASE
+        generateValue: true # Render will generate this
+      - key: RUBY_VERSION
+        value: 3.4.5
+    domains:
+      - passport.oceanheart.ai
+    
+  # Note: Redis doesn't have a free tier on Render
+  # You can either:
+  # 1. Remove Redis dependency for sessions (use database instead)
+  # 2. Use an external free Redis service like Upstash or RedisLabs
+  # 3. Pay $10/month for Render Redis starter plan
+  
+  # Option 1: Comment out Redis and use database for sessions
+  # (no redis service needed)
+  
+  # Option 2: External Redis (configure REDIS_URL manually in dashboard)
+  # Example with Upstash free tier (10MB, 10k commands/day):
+  # Sign up at upstash.com and add REDIS_URL to Render environment

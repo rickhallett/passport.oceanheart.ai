@@ -6,14 +6,14 @@
 
 ## Overview
 
-This guide provides everything you need to integrate your subdomain application with the centralized Oceanheart authentication system. Whether you're building `labs.oceanheart.ai`, `clinic.oceanheart.ai`, `passport.oceanheart.ai`, or any other subdomain, this guide will get you connected.
+This guide provides everything you need to integrate your subdomain application with the centralized Oceanheart Passport authentication system. Whether you're building `labs.oceanheart.ai`, `watson.oceanheart.ai`, `notebook.oceanheart.ai`, or any other subdomain, this guide will get you connected.
 
 ## Architecture Summary
 
-- **Central Auth**: `www.oceanheart.ai` handles all authentication
-- **Session Sharing**: JWT tokens in `.oceanheart.ai` domain cookies
-- **Local Verification**: Your app verifies tokens without API calls
-- **Redirect Flow**: Unauthenticated users redirect to central login
+- **Central Auth**: `passport.oceanheart.ai` handles all authentication
+- **Session Sharing**: JWT tokens in `.oceanheart.ai` domain cookies (cookie name: `oh_session`)
+- **Local Verification**: Your app verifies tokens locally using HS256 algorithm
+- **Redirect Flow**: Unauthenticated users redirect to passport for login with returnTo parameter
 
 ## Environment Configuration
 
@@ -22,39 +22,39 @@ This guide provides everything you need to integrate your subdomain application 
 **Your subdomain (.env.local):**
 ```bash
 # Auth System Configuration
-AUTH_URL=http://oceanheart.lvh.me:3000
+AUTH_URL=http://passport.lvh.me:5555
 JWT_SECRET=your-dev-jwt-secret-min-32-chars
 COOKIE_DOMAIN=.lvh.me
 NODE_ENV=development
 
 # Your App Configuration  
-SUBDOMAIN_NAME=passport  # labs, clinic, etc.
-PORT=3001  # or your chosen port
+SUBDOMAIN_NAME=watson  # watson, notebook, labs, etc.
+PORT=3001  # Use ports as per monorepo allocation
 ```
 
 **Development URLs:**
-- Central Auth: `http://oceanheart.lvh.me:3000`
-- Your App: `http://passport.lvh.me:3001`
-- Auth Endpoints: `http://oceanheart.lvh.me:3000/api/auth/*`
+- Central Auth: `http://passport.lvh.me:5555`
+- Your App: `http://watson.lvh.me:3001` (example)
+- Auth Endpoints: `http://passport.lvh.me:5555/api/auth/*`
 
 ### Production Environment
 
 **Your subdomain (.env.production):**
 ```bash
 # Auth System Configuration
-AUTH_URL=https://www.oceanheart.ai
+AUTH_URL=https://passport.oceanheart.ai
 JWT_SECRET=your-prod-jwt-secret-min-32-chars
 COOKIE_DOMAIN=.oceanheart.ai
 NODE_ENV=production
 
 # Your App Configuration
-SUBDOMAIN_NAME=passport
+SUBDOMAIN_NAME=watson  # Your actual subdomain
 ```
 
 **Production URLs:**
-- Central Auth: `https://www.oceanheart.ai`
-- Your App: `https://passport.oceanheart.ai`
-- Auth Endpoints: `https://www.oceanheart.ai/api/auth/*`
+- Central Auth: `https://passport.oceanheart.ai`
+- Your App: `https://watson.oceanheart.ai` (example)
+- Auth Endpoints: `https://passport.oceanheart.ai/api/auth/*`
 
 ## Core Integration Code
 
@@ -89,9 +89,9 @@ function requireAuth(request, response, next) {
     token = request.cookies['oh_session']
     
     if (!token) {
-        // No token - redirect to auth
+        // No token - redirect to passport
         returnUrl = encodeURIComponent(request.fullUrl)
-        authUrl = `${AUTH_URL}/signin?returnTo=https://${SUBDOMAIN_NAME}.${DOMAIN}${request.path}`
+        authUrl = `${AUTH_URL}/sign_in?returnTo=https://${SUBDOMAIN_NAME}.${DOMAIN}${request.path}`
         return response.redirect(authUrl)
     }
     
@@ -99,9 +99,9 @@ function requireAuth(request, response, next) {
     result = verifyJWT(token, JWT_SECRET)
     
     if (!result.valid) {
-        // Invalid token - redirect to auth
+        // Invalid token - redirect to passport
         returnUrl = encodeURIComponent(request.fullUrl)
-        authUrl = `${AUTH_URL}/signin?returnTo=https://${SUBDOMAIN_NAME}.${DOMAIN}${request.path}`
+        authUrl = `${AUTH_URL}/sign_in?returnTo=https://${SUBDOMAIN_NAME}.${DOMAIN}${request.path}`
         return response.redirect(authUrl)
     }
     
@@ -122,18 +122,19 @@ function getAuthConfig() {
     const isDev = process.env.NODE_ENV === 'development'
     
     return {
-        authUrl: isDev ? 'http://oceanheart.lvh.me:3000' : 'https://www.oceanheart.ai',
+        authUrl: isDev ? 'http://passport.lvh.me:5555' : 'https://passport.oceanheart.ai',
         domain: isDev ? '.lvh.me' : '.oceanheart.ai',
         protocol: isDev ? 'http' : 'https',
         jwtSecret: process.env.JWT_SECRET,
-        subdomainName: process.env.SUBDOMAIN_NAME
+        subdomainName: process.env.SUBDOMAIN_NAME,
+        cookieName: 'oh_session'
     }
 }
 
 function buildAuthRedirect(currentPath) {
     const config = getAuthConfig()
     const returnTo = `${config.protocol}://${config.subdomainName}${config.domain}${currentPath}`
-    return `${config.authUrl}/signin?returnTo=${encodeURIComponent(returnTo)}`
+    return `${config.authUrl}/sign_in?returnTo=${encodeURIComponent(returnTo)}`
 }
 ```
 
@@ -164,7 +165,7 @@ const requireAuth = (req, res, next) => {
     
     if (!token) {
         const returnTo = `${config.protocol}://${config.subdomainName}${config.domain}${req.originalUrl}`
-        return res.redirect(`${config.authUrl}/signin?returnTo=${encodeURIComponent(returnTo)}`)
+        return res.redirect(`${config.authUrl}/sign_in?returnTo=${encodeURIComponent(returnTo)}`)
     }
     
     try {
@@ -173,7 +174,7 @@ const requireAuth = (req, res, next) => {
         next()
     } catch (error) {
         const returnTo = `${config.protocol}://${config.subdomainName}${config.domain}${req.originalUrl}`
-        res.redirect(`${config.authUrl}/signin?returnTo=${encodeURIComponent(returnTo)}`)
+        res.redirect(`${config.authUrl}/sign_in?returnTo=${encodeURIComponent(returnTo)}`)
     }
 }
 
@@ -195,9 +196,9 @@ PyJWT==2.8.0
 import os
 
 # Auth configuration
-AUTH_URL = os.getenv('AUTH_URL', 'https://www.oceanheart.ai')
+AUTH_URL = os.getenv('AUTH_URL', 'https://passport.oceanheart.ai')
 JWT_SECRET = os.getenv('JWT_SECRET')
-SUBDOMAIN_NAME = os.getenv('SUBDOMAIN_NAME', 'passport')
+SUBDOMAIN_NAME = os.getenv('SUBDOMAIN_NAME', 'watson')
 COOKIE_DOMAIN = os.getenv('COOKIE_DOMAIN', '.oceanheart.ai')
 ```
 
@@ -234,7 +235,7 @@ class AuthMiddleware:
     def redirect_to_auth(self, request):
         protocol = 'https' if settings.COOKIE_DOMAIN == '.oceanheart.ai' else 'http'
         return_to = f"{protocol}://{settings.SUBDOMAIN_NAME}{settings.COOKIE_DOMAIN}{request.get_full_path()}"
-        auth_url = f"{settings.AUTH_URL}/signin?returnTo={return_to}"
+        auth_url = f"{settings.AUTH_URL}/sign_in?returnTo={return_to}"
         return HttpResponseRedirect(auth_url)
 ```
 
@@ -256,16 +257,16 @@ import os
 app = FastAPI()
 
 # Configuration
-AUTH_URL = os.getenv('AUTH_URL', 'https://www.oceanheart.ai')
+AUTH_URL = os.getenv('AUTH_URL', 'https://passport.oceanheart.ai')
 JWT_SECRET = os.getenv('JWT_SECRET')
-SUBDOMAIN_NAME = os.getenv('SUBDOMAIN_NAME', 'passport')
+SUBDOMAIN_NAME = os.getenv('SUBDOMAIN_NAME', 'watson')
 COOKIE_DOMAIN = os.getenv('COOKIE_DOMAIN', '.oceanheart.ai')
 
 async def get_current_user(request: Request, oh_session: str = Cookie(None)):
     if not oh_session:
         protocol = 'https' if COOKIE_DOMAIN == '.oceanheart.ai' else 'http'
         return_to = f"{protocol}://{SUBDOMAIN_NAME}{COOKIE_DOMAIN}{request.url.path}"
-        auth_url = f"{AUTH_URL}/signin?returnTo={return_to}"
+        auth_url = f"{AUTH_URL}/sign_in?returnTo={return_to}"
         raise HTTPException(status_code=307, headers={"Location": auth_url})
     
     try:
@@ -274,7 +275,7 @@ async def get_current_user(request: Request, oh_session: str = Cookie(None)):
     except jwt.InvalidTokenError:
         protocol = 'https' if COOKIE_DOMAIN == '.oceanheart.ai' else 'http'
         return_to = f"{protocol}://{SUBDOMAIN_NAME}{COOKIE_DOMAIN}{request.url.path}"
-        auth_url = f"{AUTH_URL}/signin?returnTo={return_to}"
+        auth_url = f"{AUTH_URL}/sign_in?returnTo={return_to}"
         raise HTTPException(status_code=307, headers={"Location": auth_url})
 
 @app.get("/dashboard")
@@ -318,10 +319,10 @@ class ApplicationController < ActionController::Base
   def redirect_to_auth
     protocol = Rails.env.production? ? 'https' : 'http'
     domain = Rails.env.production? ? '.oceanheart.ai' : '.lvh.me'
-    subdomain = ENV['SUBDOMAIN_NAME'] || 'passport'
+    subdomain = ENV['SUBDOMAIN_NAME'] || 'watson'
     
     return_to = "#{protocol}://#{subdomain}#{domain}#{request.fullpath}"
-    auth_url = "#{ENV['AUTH_URL']}/signin?returnTo=#{CGI.escape(return_to)}"
+    auth_url = "#{ENV['AUTH_URL']}/sign_in?returnTo=#{CGI.escape(return_to)}"
     
     redirect_to auth_url
   end
@@ -332,46 +333,68 @@ end
 
 For additional security or user data fetching, you can verify tokens with the central auth system:
 
-### Token Verification Endpoint
+### Available API Endpoints
 
+#### Token Verification
 **POST** `${AUTH_URL}/api/auth/verify`
 
 ```javascript
-async function verifyTokenWithServer(token) {
+async function verifyTokenWithServer() {
     const response = await fetch(`${AUTH_URL}/api/auth/verify`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token })
+        credentials: 'include',  // Include cookies
+        headers: { 'Content-Type': 'application/json' }
     })
     
     return await response.json()
-    // Returns: { valid: true, user: { id, email } } or { valid: false }
+    // Returns: { valid: true, user: { userId, email } } or { valid: false }
 }
 ```
 
-### Token Refresh Endpoint
+#### Get Current User
+**GET** `${AUTH_URL}/api/auth/user`
 
+```javascript
+async function getCurrentUser() {
+    const response = await fetch(`${AUTH_URL}/api/auth/user`, {
+        method: 'GET',
+        credentials: 'include'  // Include cookies
+    })
+    
+    return await response.json()
+    // Returns: { userId, email } or error
+}
+```
+
+#### Sign Out
+**DELETE** `${AUTH_URL}/api/auth/signout`
+
+```javascript
+async function signOut() {
+    const response = await fetch(`${AUTH_URL}/api/auth/signout`, {
+        method: 'DELETE',
+        credentials: 'include'  // Include cookies
+    })
+    
+    return response.ok
+    // Clears the oh_session cookie
+}
+```
+
+#### Token Refresh
 **POST** `${AUTH_URL}/api/auth/refresh`
 
 ```javascript
-async function refreshToken(token) {
+async function refreshToken() {
     const response = await fetch(`${AUTH_URL}/api/auth/refresh`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token })
+        credentials: 'include',  // Include cookies
+        headers: { 'Content-Type': 'application/json' }
     })
     
     const data = await response.json()
     // Returns: { token: "new-jwt" } or { error: "Invalid token" }
-    
-    if (data.token) {
-        // Update cookie with new token
-        setCookie('oh_session', data.token, {
-            domain: COOKIE_DOMAIN,
-            secure: true,
-            httpOnly: true
-        })
-    }
+    // Cookie is automatically updated by the server
     
     return data
 }
@@ -381,21 +404,29 @@ async function refreshToken(token) {
 
 ### 1. Local Development Setup
 
-1. **Start the main auth system:**
+1. **Start Passport authentication system:**
    ```bash
-   cd oceanheart-ui
-   npm run dev  # Runs on oceanheart.lvh.me:3000
+   cd passport.oceanheart.ai
+   
+   # Using Docker Compose (recommended)
+   docker-compose up -d
+   
+   # Or traditional Rails setup
+   bundle install
+   bin/rails db:create db:migrate db:seed
+   bin/rails server -p 5555
    ```
 
 2. **Start your subdomain app:**
    ```bash
-   # Your app should run on passport.lvh.me:3001
-   npm start  # or your framework's dev command
+   # Example: Watson app on port 3001
+   cd watson.oceanheart.ai
+   bun run dev  # Runs on watson.lvh.me:3001
    ```
 
 3. **Test the flow:**
-   - Visit `http://passport.lvh.me:3001/dashboard`
-   - Should redirect to `http://oceanheart.lvh.me:3000/signin?returnTo=...`
+   - Visit `http://watson.lvh.me:3001/dashboard`
+   - Should redirect to `http://passport.lvh.me:5555/sign_in?returnTo=...`
    - After login, should redirect back to your dashboard
 
 ### 2. Cookie Verification
@@ -449,28 +480,54 @@ if (token) {
 
 **Required for all environments:**
 ```bash
-JWT_SECRET=your-jwt-secret-min-32-characters
-SUBDOMAIN_NAME=passport  # or your subdomain name
+JWT_SECRET=your-jwt-secret-min-32-characters  # Must match Passport's secret
+SUBDOMAIN_NAME=watson  # Your actual subdomain (watson, notebook, labs, etc.)
 ```
 
 **Development:**
 ```bash
-AUTH_URL=http://oceanheart.lvh.me:3000
+AUTH_URL=http://passport.lvh.me:5555
 COOKIE_DOMAIN=.lvh.me
+NODE_ENV=development
 ```
 
 **Production:**
 ```bash
-AUTH_URL=https://www.oceanheart.ai
+AUTH_URL=https://passport.oceanheart.ai
 COOKIE_DOMAIN=.oceanheart.ai
+NODE_ENV=production
 ```
+
+**Docker Development (additional):**
+```bash
+# If using Docker Compose for Passport
+PASSPORT_DB_PORT=5002  # PostgreSQL port
+PASSPORT_REDIS_PORT=6002  # Redis port
+```
+
+## Port Allocation Reference
+
+**Development Ports (per monorepo standards):**
+- `3000` - preflight.oceanheart.ai
+- `3001` - watson.oceanheart.ai  
+- `3003` - sidekick.oceanheart.ai
+- `3004` - my.oceanheart.ai
+- `3005` - labs.oceanheart.ai
+- `3006` - aceternity-test
+- `5555` - passport.oceanheart.ai (Authentication)
+- `8080` - notebook.oceanheart.ai
+
+**Docker Service Ports (Passport):**
+- `5002` - PostgreSQL (mapped from 5432)
+- `6002` - Redis (mapped from 6379)
 
 ## Getting Help
 
 1. **Check JWT payload** - Decode token to verify structure
 2. **Verify environment variables** - Ensure all required vars are set
-3. **Test cookie sharing** - Check browser DevTools for cookie presence
-4. **Review logs** - Check both your app and main auth system logs
+3. **Test cookie sharing** - Check browser DevTools for `oh_session` cookie
+4. **Review logs** - Check both your app and Passport logs
+5. **Test endpoints** - Use the test scripts in `passport.oceanheart.ai/test/`
 
 ---
 

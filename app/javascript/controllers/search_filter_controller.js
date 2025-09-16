@@ -124,3 +124,4 @@ export default class extends Controller {
     this.filterRoutes()
   }
 }
+

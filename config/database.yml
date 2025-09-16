@@ -81,9 +81,8 @@ test:
 production:
   primary: &primary_production
     <<: *default
-    database: oceanheart_auth_production
-    username: oceanheart_auth
-    password: <%= ENV["OCEANHEART_AUTH_DATABASE_PASSWORD"] %>
+    # Render provides DATABASE_URL automatically
+    url: <%= ENV['DATABASE_URL'] %>
   cache:
     <<: *primary_production
     database: oceanheart_auth_production_cache
