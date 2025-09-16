@@ -29,7 +29,7 @@ gem "bcrypt", "~> 3.1.7"
 gem "jwt", "~> 2.7"
 
 # CORS for cross-domain API requests (Phase 3)
-gem "rack-cors", "~> 2.0"
+gem "rack-cors", "~> 3.0"
 
 # Redis for caching and ActionCable (Phase 2)
 gem "redis", "~> 5.0"
