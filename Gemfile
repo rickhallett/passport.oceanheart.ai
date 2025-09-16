@@ -26,7 +26,7 @@ gem "jbuilder"
 gem "bcrypt", "~> 3.1.7"
 
 # JWT for cross-domain authentication (Phase 3)
-gem "jwt", "~> 2.7"
+gem "jwt", "~> 3.1"
 
 # CORS for cross-domain API requests (Phase 3)
 gem "rack-cors", "~> 2.0"
