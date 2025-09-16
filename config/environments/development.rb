@@ -39,7 +39,7 @@ Rails.application.configure do
 
   # Set localhost to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: "localhost", port: 5555 }
-  
+
   # Allow .lvh.me subdomains for cross-domain testing
   config.hosts << /.*\.lvh\.me/
 

@@ -1,7 +1,7 @@
 class HomeController < ApplicationController
   allow_unauthenticated_access
   before_action :resume_session
-  
+
   def index
     Rails.logger.info "=== HOME CONTROLLER DEBUG ==="
     Rails.logger.info "cookies.signed[:session_id]: #{cookies.signed[:session_id]}"

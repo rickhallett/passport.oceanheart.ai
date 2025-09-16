@@ -21,7 +21,7 @@ module JwtAuthentication
 
   def extract_jwt_token
     # Support both old and new cookie names during migration
-    cookies[:oh_session] || cookies[:jwt_token] || request.headers['Authorization']&.remove(/^Bearer /)
+    cookies[:oh_session] || cookies[:jwt_token] || request.headers["Authorization"]&.remove(/^Bearer /)
   end
 
   def redirect_to_login
@@ -58,8 +58,8 @@ module JwtAuthentication
   end
 
   def cookie_domain_from_env
-    ENV.fetch('COOKIE_DOMAIN') do
-      Rails.env.production? ? '.oceanheart.ai' : '.lvh.me'
+    ENV.fetch("COOKIE_DOMAIN") do
+      Rails.env.production? ? ".oceanheart.ai" : ".lvh.me"
     end
   end
 end

@@ -1,7 +1,7 @@
 class Admin::UsersController < ApplicationController
   include AdminAuthorization
 
-  before_action :set_user, only: [:show, :destroy, :toggle_role]
+  before_action :set_user, only: [ :show, :destroy, :toggle_role ]
 
   def index
     @search = params[:search].to_s.strip
@@ -35,7 +35,7 @@ class Admin::UsersController < ApplicationController
     @user.destroy
 
     respond_to do |format|
-      format.html { redirect_to admin_users_path, notice: 'User deleted successfully' }
+      format.html { redirect_to admin_users_path, notice: "User deleted successfully" }
       format.turbo_stream { render turbo_stream: turbo_stream.remove(dom_id(@user)) }
     end
   end
@@ -46,12 +46,12 @@ class Admin::UsersController < ApplicationController
       return
     end
 
-    @user.update!(role: @user.admin? ? 'user' : 'admin')
+    @user.update!(role: @user.admin? ? "user" : "admin")
 
     respond_to do |format|
-      format.html { redirect_to admin_users_path, notice: 'Role updated' }
+      format.html { redirect_to admin_users_path, notice: "Role updated" }
       format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(dom_id(@user), partial: 'admin/users/user_row', locals: { user: @user })
+        render turbo_stream: turbo_stream.replace(dom_id(@user), partial: "admin/users/user_row", locals: { user: @user })
       end
     end
   end
@@ -62,4 +62,3 @@ class Admin::UsersController < ApplicationController
     @user = User.find(params[:id])
   end
 end
-

@@ -5,11 +5,11 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     else
       origins %r{https://.*\.oceanheart\.ai$}
     end
-    
-    resource '/api/*',
+
+    resource "/api/*",
       headers: :any,
-      methods: [:get, :post, :put, :patch, :delete, :options, :head],
+      methods: [ :get, :post, :put, :patch, :delete, :options, :head ],
       credentials: true,
-      expose: ['Authorization']
+      expose: [ "Authorization" ]
   end
 end

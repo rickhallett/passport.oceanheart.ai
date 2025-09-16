@@ -1,6 +1,6 @@
 class SessionsController < ApplicationController
   include JwtAuthentication
-  
+
   allow_unauthenticated_access only: %i[ new create ]
   rate_limit to: 10, within: 3.minutes, only: :create, with: -> { redirect_to sign_in_path, alert: "Try again later." }
 
@@ -12,15 +12,15 @@ class SessionsController < ApplicationController
     if user = User.authenticate_by(params.permit(:email_address, :password))
       start_new_session_for user
       set_jwt_cookie(user)
-      
+
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: [
-            turbo_stream.replace("authentication", 
-              partial: "sessions/success", 
+            turbo_stream.replace("authentication",
+              partial: "sessions/success",
               locals: { user: user }),
-            turbo_stream.replace("auth_status", 
-              partial: "shared/auth_status", 
+            turbo_stream.replace("auth_status",
+              partial: "shared/auth_status",
               locals: { user: user })
           ]
         end
@@ -29,7 +29,7 @@ class SessionsController < ApplicationController
     else
       respond_to do |format|
         format.turbo_stream do
-          render turbo_stream: turbo_stream.replace("authentication", 
+          render turbo_stream: turbo_stream.replace("authentication",
             partial: "sessions/error")
         end
         format.html { redirect_to sign_in_path, alert: "Try another email address or password." }
@@ -56,7 +56,7 @@ class SessionsController < ApplicationController
 
   def sanitize_return_url(url)
     return nil if url.blank?
-    
+
     begin
       uri = URI.parse(url)
       return nil unless allowed_redirect_host?(uri.host)
@@ -68,21 +68,21 @@ class SessionsController < ApplicationController
 
   def allowed_redirect_host?(host)
     return false if host.nil?
-    
+
     allowed_hosts = if Rails.env.production?
       [
-        'oceanheart.ai',
-        'www.oceanheart.ai',
+        "oceanheart.ai",
+        "www.oceanheart.ai",
         /\A[a-z0-9-]+\.oceanheart\.ai\z/
       ]
     else
       [
-        'lvh.me',
+        "lvh.me",
         /\A[a-z0-9-]+\.lvh\.me\z/,
-        'localhost'
+        "localhost"
       ]
     end
-    
+
     allowed_hosts.any? do |allowed|
       allowed.is_a?(Regexp) ? host =~ allowed : host == allowed
     end

@@ -3,37 +3,37 @@ class User < ApplicationRecord
   has_many :sessions, dependent: :destroy
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
-  
-  enum :role, { user: 'user', admin: 'admin' }
-  
+
+  enum :role, { user: "user", admin: "admin" }
+
   def admin?
     role == "admin"
   end
-  
+
   def generate_jwt
     JWT.encode(
-      { 
-        userId: id, 
-        email: email_address, 
+      {
+        userId: id,
+        email: email_address,
         exp: 1.week.from_now.to_i,
         iat: Time.current.to_i,
-        iss: 'passport.oceanheart.ai'
+        iss: "passport.oceanheart.ai"
       },
       Rails.application.credentials.secret_key_base,
-      'HS256'
+      "HS256"
     )
   end
-  
+
   def self.decode_jwt(token)
     begin
       payload = JWT.decode(
-        token, 
-        Rails.application.credentials.secret_key_base, 
+        token,
+        Rails.application.credentials.secret_key_base,
         true,
-        algorithm: 'HS256'
+        algorithm: "HS256"
       )[0]
       # Support both old and new payload format during migration
-      user_id = payload['userId'] || payload['user_id']
+      user_id = payload["userId"] || payload["user_id"]
       find(user_id)
     rescue JWT::DecodeError, JWT::ExpiredSignature, ActiveRecord::RecordNotFound
       nil
