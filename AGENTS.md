@@ -1,46 +1,19 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- Rails app (Rails 8, Postgres, Tailwind, Importmap).
-- Source: `app/` (models, controllers, views, jobs), helpers in `app/helpers`.
-- Config: `config/`, Rack entry `config.ru`.
-- Database: `db/` (migrations, seeds).
-- Tests: `test/` (unit, integration, system; fixtures in `test/fixtures`).
-- Executables and scripts: `bin/` (e.g., `dev`, `setup`, `rubocop`).
-- Public assets: `public/`, docs: `docs/`.
-- Deployment/infra: `.kamal/`, `Dockerfile`, `render.yaml`.
+Rails 8 app lives under `app/`, with models, controllers, views, jobs, and helpers in `app/helpers`. Configuration belongs in `config/`, rack entry in `config.ru`, and migrations plus seeds in `db/`. Tests reside in `test/` with fixtures in `test/fixtures`. Executables are in `bin/` (`bin/dev`, `bin/setup`, `bin/rubocop`), public assets in `public/`, and deployment scripts in `.kamal/`, `Dockerfile`, and `render.yaml`.
 
 ## Build, Test, and Development Commands
-- Install and setup: `bin/setup` (bundle, db setup).
-- Run locally: `bin/dev` (foreman runs `web` and Tailwind watcher from `Procfile.dev`).
-- Rails server (direct): `bin/rails server -p 3000`.
-- DB tasks: `bin/rails db:prepare`, `bin/rails db:migrate`.
-- Test suite: `bin/rails test` and system tests `bin/rails test:system`.
-- Lint: `bin/rubocop`.
-- Security scan: `bin/brakeman --no-pager`.
-- JS deps audit: `bin/importmap audit`.
-- Deploy (Kamal): `bin/kamal deploy` (ensure secrets set in `.kamal/secrets`).
+Run `bin/setup` once to install gems and prepare databases. Use `bin/dev` for local development; it boots Rails and Tailwind via `Procfile.dev`. Launch the server directly with `bin/rails server -p 3000`. Keep schemas fresh with `bin/rails db:prepare` and apply migrations via `bin/rails db:migrate`. Execute the full test suite through `bin/rails test`; add `:system` for browser tests.
 
 ## Coding Style & Naming Conventions
-- Ruby: 2-space indentation, no semicolons, single quotes unless interpolation.
-- Follow Rails conventions: `SnakeCase` files, `CamelCase` classes, RESTful controllers, singular models.
-- Keep methods small; prefer POROs in `app/` or `lib/` when appropriate.
-- Lint with RuboCop Omakase; fix offenses before pushing.
+Follow Rails conventions: 2-space indentation, single quotes unless interpolation, and descriptive method names. Place POROs under `app/` or `lib/` when they serve domain logic. File names are snake_case; classes remain CamelCase. Run `bin/rubocop` before pushing to enforce style and catch common smell.
 
 ## Testing Guidelines
-- Framework: Minitest (unit/integration/system).
-- Name tests after subject, e.g., `test/models/user_test.rb`.
-- Use fixtures in `test/fixtures/*.yml`.
-- Run `bin/rails db:test:prepare` if schema changes.
-- Aim to cover critical auth/session flows and any DB-backed logic.
+Use Minitest for unit, integration, and system coverage. Name test files after the subject, e.g., `test/models/user_test.rb`. Maintain fixtures in `test/fixtures`. After schema changes, run `bin/rails db:test:prepare` before executing `bin/rails test` or `bin/rails test:system`.
 
 ## Commit & Pull Request Guidelines
-- Use Conventional Commits: `feat:`, `fix:`, `docs:`, `style:`, `config:`, etc. Scope optional (e.g., `feat(auth): ...`).
-- Commits should be small and focused.
-- PRs must include: clear description, linked issue (if any), testing notes, and screenshots for UI changes.
-- Ensure CI passes: lint, security scans, and tests.
+Write Conventional Commit messages such as `feat(auth): allow OAuth login` or `fix: correct invoice total`. Keep commits focused and small. Pull requests must describe the change, reference related issues, and include testing notes; attach screenshots for UI updates. Ensure CI-ready by running `bin/rubocop`, `bin/brakeman --no-pager`, and `bin/importmap audit` locally.
 
 ## Security & Configuration Tips
-- Use `.env.development`/`.env.production` for secrets; never commit credentials. Keep `config/master.key` safe.
-- Required services: PostgreSQL (DATABASE_URL) and optionally Redis for queue/cable.
-- Review `.kamal/secrets` for how secrets are sourced; do not hardcode.
+Store secrets in `.env.development` or `.env.production`, and protect `config/master.key`. PostgreSQL is required; Redis is optional for queues or Action Cable. Review `.kamal/secrets` before deployment and never commit credentials.
