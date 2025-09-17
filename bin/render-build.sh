@@ -24,11 +24,8 @@ bundle exec rails assets:clean
 echo "Running database migrations..."
 bundle exec rails db:migrate
 
-# Seed database if this is the first deployment
-# Uncomment the following if you want to run seeds on first deploy
-# if [[ -z "$RENDER_DEPLOYED" ]]; then
-#   echo "First deployment detected, seeding database..."
-#   bundle exec rails db:seed
-# fi
+# Seed database with required records
+echo "Loading database seeds..."
+bundle exec rails db:seed
 
 echo "Build complete!"
