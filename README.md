@@ -34,7 +34,7 @@ Oceanheart Passport serves as the centralized authentication hub for all Oceanhe
 
 3. **Start the Server**
    ```bash
-   bin/rails server -p 5555
+  bin/rails server -p 8004
    ```
 
 4. **Create Test User**
@@ -130,7 +130,7 @@ All API endpoints are available under `/api/auth/`:
 
 #### Development
 - **Domain**: `.lvh.me` (points to localhost)
-- **Port**: 5555
+- **Port**: 8004
 - **Cookie**: `oh_session` with `secure: false`
 
 Set environment variables:
@@ -203,7 +203,7 @@ Admin users have access to:
 
 ```bash
 # Start server first
-bin/rails server -p 5555
+bin/rails server -p 8004
 
 # Run all authentication tests
 ./test/auth-test.sh
@@ -257,8 +257,8 @@ The application uses standard Rails authentication with:
    ```
 
 5. **Access the application**
-   - Web UI: http://passport.lvh.me:5555
-   - API: http://passport.lvh.me:5555/api/auth
+  - Web UI: http://passport.lvh.me:8004
+  - API: http://passport.lvh.me:8004/api/auth
 
 #### Production Deployment
 

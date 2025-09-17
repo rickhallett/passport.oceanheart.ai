@@ -6,7 +6,7 @@
 set -e
 
 # Configuration
-BASE_URL="${BASE_URL:-http://localhost:5555}"
+BASE_URL="${BASE_URL:-http://localhost:8004}"
 API_BASE="${BASE_URL}/api"
 TEST_EMAIL="test@example.com"
 TEST_PASSWORD="password123"
@@ -57,7 +57,7 @@ check_server() {
         log_success "Server is running"
     else
         log_error "Server is not responding at $BASE_URL (HTTP $http_code)"
-        echo "Please start the server with: bin/rails server -p 5555"
+        echo "Please start the server with: bin/rails server -p 8004"
         exit 1
     fi
 }
@@ -375,7 +375,7 @@ while [[ $# -gt 0 ]]; do
         --help|-h)
             echo "Usage: $0 [options]"
             echo "Options:"
-            echo "  --url URL        Base URL (default: http://localhost:5555)"
+            echo "  --url URL        Base URL (default: http://localhost:8004)"
             echo "  --email EMAIL    Test email (default: test@example.com)"
             echo "  --password PASS  Test password (default: password123)"
             echo "  --verbose, -v    Verbose output"

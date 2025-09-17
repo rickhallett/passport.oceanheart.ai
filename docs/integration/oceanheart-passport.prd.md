@@ -22,7 +22,7 @@ This guide provides everything you need to integrate your subdomain application 
 **Your subdomain (.env.local):**
 ```bash
 # Auth System Configuration
-AUTH_URL=http://passport.lvh.me:5555
+AUTH_URL=http://passport.lvh.me:8004
 JWT_SECRET=your-dev-jwt-secret-min-32-chars
 COOKIE_DOMAIN=.lvh.me
 NODE_ENV=development
@@ -33,9 +33,9 @@ PORT=3001  # Use ports as per monorepo allocation
 ```
 
 **Development URLs:**
-- Central Auth: `http://passport.lvh.me:5555`
+- Central Auth: `http://passport.lvh.me:8004`
 - Your App: `http://watson.lvh.me:3001` (example)
-- Auth Endpoints: `http://passport.lvh.me:5555/api/auth/*`
+- Auth Endpoints: `http://passport.lvh.me:8004/api/auth/*`
 
 ### Production Environment
 
@@ -122,7 +122,7 @@ function getAuthConfig() {
     const isDev = process.env.NODE_ENV === 'development'
     
     return {
-        authUrl: isDev ? 'http://passport.lvh.me:5555' : 'https://passport.oceanheart.ai',
+        authUrl: isDev ? 'http://passport.lvh.me:8004' : 'https://passport.oceanheart.ai',
         domain: isDev ? '.lvh.me' : '.oceanheart.ai',
         protocol: isDev ? 'http' : 'https',
         jwtSecret: process.env.JWT_SECRET,
@@ -414,7 +414,7 @@ async function refreshToken() {
    # Or traditional Rails setup
    bundle install
    bin/rails db:create db:migrate db:seed
-   bin/rails server -p 5555
+   bin/rails server -p 8004
    ```
 
 2. **Start your subdomain app:**
@@ -426,7 +426,7 @@ async function refreshToken() {
 
 3. **Test the flow:**
    - Visit `http://watson.lvh.me:3001/dashboard`
-   - Should redirect to `http://passport.lvh.me:5555/sign_in?returnTo=...`
+   - Should redirect to `http://passport.lvh.me:8004/sign_in?returnTo=...`
    - After login, should redirect back to your dashboard
 
 ### 2. Cookie Verification
@@ -486,7 +486,7 @@ SUBDOMAIN_NAME=watson  # Your actual subdomain (watson, notebook, labs, etc.)
 
 **Development:**
 ```bash
-AUTH_URL=http://passport.lvh.me:5555
+AUTH_URL=http://passport.lvh.me:8004
 COOKIE_DOMAIN=.lvh.me
 NODE_ENV=development
 ```
@@ -514,7 +514,7 @@ PASSPORT_REDIS_PORT=6002  # Redis port
 - `3004` - my.oceanheart.ai
 - `3005` - labs.oceanheart.ai
 - `3006` - aceternity-test
-- `5555` - passport.oceanheart.ai (Authentication)
+- `8004` - passport.oceanheart.ai (Authentication)
 - `8080` - notebook.oceanheart.ai
 
 **Docker Service Ports (Passport):**

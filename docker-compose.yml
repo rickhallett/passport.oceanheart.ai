@@ -58,7 +58,7 @@ services:
       - node_modules:/rails/node_modules
       - rails_cache:/rails/tmp/cache
     ports:
-      - "5555:5555"
+      - "8004:5555"
     depends_on:
       postgres:
         condition: service_healthy

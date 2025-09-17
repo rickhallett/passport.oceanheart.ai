@@ -33,7 +33,7 @@ The Docker setup includes:
    ```
 
 4. **Access the application**
-   - Application: http://lvh.me:5555
+   - Application: http://lvh.me:8004
    - Database: localhost:5432
    - Redis: localhost:6379
 
@@ -196,7 +196,7 @@ docker-compose -f docker-compose.production.yml exec web tail -f log/production.
 1. **Port already in use**
    ```bash
    # Find process using port
-   lsof -i :5555
+   lsof -i :8004
    # Kill process or change port in docker-compose.yml
    ```
 

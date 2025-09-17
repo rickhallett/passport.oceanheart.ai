@@ -1,2 +1,2 @@
-web: bin/rails server
+web: bin/rails server -p 8004
 css: npm run build:css
