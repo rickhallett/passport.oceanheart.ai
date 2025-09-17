@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Determine repository root based on this script's location
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT_DIR"
+
+if ! command -v render >/dev/null 2>&1; then
+  echo "Error: Render CLI is not installed or not available in PATH." >&2
+  echo "Install instructions: https://render.com/docs/render-cli" >&2
+  exit 1
+fi
+
+if ! command -v jq >/dev/null 2>&1; then
+  echo "Error: jq is required to parse Render CLI output." >&2
+  exit 1
+fi
+
+WEB_SERVICE_NAME=${RENDER_WEB_SERVICE:-passport-oceanheart}
+DATABASE_SERVICE_NAME=${RENDER_DATABASE_SERVICE:-passport-postgres}
+
+# Fetch the service/datastore catalog for the active workspace
+SERVICES_JSON=$(render services list --output json)
+
+# Lookup the resource ID Render expects when streaming logs
+find_resource_id() {
+  local resource_name=$1
+
+  printf '%s\n' "$SERVICES_JSON" | jq -r --arg name "$resource_name" '
+    def lookup($n):
+      map(
+        if has("service") and .service.name == $n then .service.id
+        elif has("postgres") and .postgres.name == $n then .postgres.id
+        else empty
+        end
+      ) | .[0] // empty;
+
+    if type == "array" then
+      lookup($name)
+    else
+      empty
+    end
+  '
+}
+
+WEB_ID=$(find_resource_id "$WEB_SERVICE_NAME")
+DB_ID=$(find_resource_id "$DATABASE_SERVICE_NAME")
+
+if [[ -z "$WEB_ID" ]]; then
+  echo "Error: could not find Render service named '$WEB_SERVICE_NAME'." >&2
+  echo "Set RENDER_WEB_SERVICE to override." >&2
+  exit 1
+fi
+
+if [[ -z "$DB_ID" ]]; then
+  echo "Error: could not find Render datastore named '$DATABASE_SERVICE_NAME'." >&2
+  echo "Set RENDER_DATABASE_SERVICE to override." >&2
+  exit 1
+fi
+
+RESOURCES="$WEB_ID,$DB_ID"
+
+echo "Streaming logs for: $WEB_SERVICE_NAME ($WEB_ID) and $DATABASE_SERVICE_NAME ($DB_ID)" >&2
+
+exec render logs --resources "$RESOURCES" --tail "$@"

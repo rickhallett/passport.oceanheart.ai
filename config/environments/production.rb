@@ -30,6 +30,15 @@ Rails.application.configure do
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = true
 
+  # Render terminates TLS in front of the Rails process, which means requests
+  # can reach the app over plain HTTP even though end-users connect with HTTPS.
+  # Ensure the AssumeSSL middleware runs before ForceSSL so Rails treats the
+  # request as HTTPS before enforcement happens (otherwise non-GET requests like
+  # the sign-in POST are rejected with InvalidCrossOriginRequest errors).
+  if defined?(ActionDispatch::SSL) && defined?(ActionDispatch::AssumeSSL)
+    config.middleware.insert_before(ActionDispatch::SSL, ActionDispatch::AssumeSSL)
+  end
+
   # Skip http-to-https redirect for the default health check endpoint.
   # config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
 

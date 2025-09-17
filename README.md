@@ -373,7 +373,13 @@ docker-compose up -d
 # Stop all services
 docker-compose down
 
-# View logs
+# Stream Render web + database logs (requires render CLI login)
+bin/watch_logs
+
+# Override service names or add log filters
+RENDER_WEB_SERVICE=my-web RENDER_DATABASE_SERVICE=my-db bin/watch_logs --limit=300
+
+# View local Docker logs for a specific service
 docker-compose logs -f [service_name]
 
 # Execute commands in container
