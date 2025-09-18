@@ -1,0 +1,13 @@
+greeting: Welcome to Passport Buffalo
+sign_in: Sign In
+sign_up: Sign Up
+sign_out: Sign Out
+email: Email
+password: Password
+forgot_password: Forgot your password?
+remember_me: Remember me
+invalid_credentials: Invalid email or password
+account_created: Your account has been created successfully
+signed_out: You have been signed out
+password_reset_sent: Password reset instructions have been sent to your email
+password_updated: Your password has been updated successfully

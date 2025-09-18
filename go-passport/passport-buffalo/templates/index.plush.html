@@ -1,0 +1,32 @@
+<h1>Passport Authentication</h1>
+
+<%= if (current_user) { %>
+    <div style="text-align: center;">
+        <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 20px;">
+            Welcome, <strong><%= current_user.EmailAddress %></strong>
+        </p>
+        
+        <% if (current_user.IsAdmin()) { %>
+            <div style="margin-bottom: 20px;">
+                <a href="/admin" class="btn" style="display: inline-block; width: auto; padding: 10px 20px;">
+                    Admin Dashboard
+                </a>
+            </div>
+        <% } %>
+
+        <%= form_for(user, {action: "/sign_out", method: "DELETE"}) { %>
+            <button type="submit" class="btn btn-danger">Sign Out</button>
+        <% } %>
+    </div>
+<% } else { %>
+    <div style="text-align: center;">
+        <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 30px;">
+            Centralized authentication for Oceanheart.ai ecosystem
+        </p>
+        
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <a href="/sign_in" class="btn" style="width: auto; padding: 12px 30px;">Sign In</a>
+            <a href="/sign_up" class="btn" style="width: auto; padding: 12px 30px;">Sign Up</a>
+        </div>
+    </div>
+<% } %>

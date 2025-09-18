@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Glass morphism terminal theme styles */
+        .terminal-window {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        
+        .terminal-header {
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px 12px 0 0;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .terminal-controls {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .terminal-control {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .terminal-control.close { background-color: #ff5f56; }
+        .terminal-control.minimize { background-color: #ffbd2e; }
+        .terminal-control.maximize { background-color: #27ca3f; }
+        
+        .terminal-title {
+            color: rgba(255, 255, 255, 0.7);
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+        
+        .terminal-content {
+            padding: 24px;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+        }
+        
+        .terminal-prompt {
+            color: #50C878;
+            font-weight: 600;
+        }
+        
+        .terminal-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+        }
+        
+        .terminal-input:focus {
+            outline: none;
+            border-color: #50C878;
+            box-shadow: 0 0 0 2px rgba(80, 199, 120, 0.2);
+        }
+        
+        .terminal-button {
+            background: rgba(80, 199, 120, 0.8);
+            border: 1px solid rgba(80, 199, 120, 0.6);
+            color: white;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .terminal-button:hover {
+            background: rgba(80, 199, 120, 1);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(80, 199, 120, 0.3);
+        }
+        
+        .terminal-link {
+            color: #50C878;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+        
+        .terminal-link:hover {
+            border-bottom-color: #50C878;
+        }
+        
+        .terminal-error {
+            color: #ff5f56;
+            background: rgba(255, 95, 86, 0.1);
+            border: 1px solid rgba(255, 95, 86, 0.3);
+            border-radius: 6px;
+            padding: 12px;
+            margin: 16px 0;
+        }
+        
+        .terminal-success {
+            color: #50C878;
+            background: rgba(80, 199, 120, 0.1);
+            border: 1px solid rgba(80, 199, 120, 0.3);
+            border-radius: 6px;
+            padding: 12px;
+            margin: 16px 0;
+        }
+        
+        .terminal-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .terminal-window {
+                margin: 10px;
+                width: calc(100% - 20px);
+            }
+            
+            .terminal-content {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal-page">
+        <div class="terminal-window max-w-md w-full">
+            <div class="terminal-header">
+                <div class="terminal-controls">
+                    <div class="terminal-control close"></div>
+                    <div class="terminal-control minimize"></div>
+                    <div class="terminal-control maximize"></div>
+                </div>
+                <div class="terminal-title">{{if .User}}{{.User.EmailAddress}}@{{else}}guest@{{end}}passport.oceanheart.ai</div>
+            </div>
+            <div class="terminal-content">
+                {{template "content" .}}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

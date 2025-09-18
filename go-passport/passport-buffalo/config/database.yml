@@ -1,0 +1,21 @@
+development:
+  dialect: postgres
+  database: passport_buffalo_development
+  user: postgres
+  password: postgres
+  host: 127.0.0.1
+  port: 5432
+  pool: 5
+
+test:
+  dialect: postgres
+  database: passport_buffalo_test
+  user: postgres
+  password: postgres
+  host: 127.0.0.1
+  port: 5432
+  pool: 5
+
+production:
+  url: {{envOr "DATABASE_URL" "postgres://user:pass@localhost:5432/passport_buffalo_production?sslmode=require"}}
+  pool: 25
