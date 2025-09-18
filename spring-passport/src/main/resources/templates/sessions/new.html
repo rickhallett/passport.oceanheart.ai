@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{layouts/application :: html}">
+<head>
+    <title th:text="${pageTitle}">Sign In</title>
+</head>
+
+<body>
+    <main th:replace="~{layouts/application :: content}">
+        <div class="terminal-page centered flex justify-center px-4 py-12">
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="terminal-controls">
+                        <div class="terminal-control close"></div>
+                        <div class="terminal-control minimize"></div>
+                        <div class="terminal-control maximize"></div>
+                    </div>
+                    <div class="terminal-title">oceanheart-passport --auth</div>
+                </div>
+                
+                <div class="terminal-content">
+                    <div class="terminal-prompt">oceanheart-passport --auth</div>
+                    <div class="terminal-text mb-6">Initializing authentication protocol...</div>
+
+                    <div class="auth-container">
+                        <!-- Flash messages -->
+                        <div th:if="${error}" class="terminal-error" th:text="${error}"></div>
+                        <div th:if="${notice}" class="terminal-success" th:text="${notice}"></div>
+                        
+                        <!-- Validation errors -->
+                        <div th:if="${#fields.hasErrors('signInRequest')}" class="terminal-error">
+                            <div th:each="err : ${#fields.errors('signInRequest')}" th:text="${err}"></div>
+                        </div>
+
+                        <div class="terminal-text mb-4">Ready</div>
+
+                        <form th:action="@{/sign-in}" 
+                              th:object="${signInRequest}"
+                              method="post" 
+                              class="terminal-form">
+                            
+                            <!-- CSRF Token -->
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            
+                            <!-- Return To -->
+                            <input th:if="${returnTo}" type="hidden" name="returnTo" th:value="${returnTo}" />
+
+                            <div>
+                                <label for="emailAddress" class="terminal-label">
+                                    Email Address
+                                </label>
+                                <input type="email" 
+                                       id="emailAddress"
+                                       th:field="*{emailAddress}"
+                                       required="required" 
+                                       autofocus="autofocus" 
+                                       autocomplete="username" 
+                                       placeholder="user@oceanheart.ai" 
+                                       class="terminal-input"
+                                       th:errorclass="error" />
+                                <div th:if="${#fields.hasErrors('emailAddress')}" class="terminal-error">
+                                    <span th:errors="*{emailAddress}"></span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="password" class="terminal-label">
+                                    Password
+                                </label>
+                                <input type="password" 
+                                       id="password"
+                                       th:field="*{password}"
+                                       required="required" 
+                                       autocomplete="current-password" 
+                                       placeholder="••••••••" 
+                                       maxlength="72" 
+                                       class="terminal-input"
+                                       th:errorclass="error" />
+                                <div th:if="${#fields.hasErrors('password')}" class="terminal-error">
+                                    <span th:errors="*{password}"></span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <button type="submit" class="terminal-button w-full">
+                                    SIGN IN
+                                </button>
+                            </div>
+
+                            <div class="text-center">
+                                <a th:href="@{/forgot-password}" class="terminal-link">
+                                    FORGOT PASSWORD?
+                                </a>
+                            </div>
+                        </form>
+                        
+                        <div class="terminal-divider"></div>
+                        
+                        <div class="text-center mb-4">
+                            <a th:href="@{/sign-up(returnTo=${returnTo})}" class="terminal-button-secondary">
+                                CREATE ACCOUNT
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="terminal-divider"></div>
+                    <div class="text-center">
+                        <a th:href="@{/}" class="terminal-button-secondary">
+                            BACK TO HOME
+                        </a>
+                    </div>
+                    
+                    <div class="mt-4 terminal-text-muted text-center">
+                        <span class="terminal-cursor">Authentication protocol ready</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

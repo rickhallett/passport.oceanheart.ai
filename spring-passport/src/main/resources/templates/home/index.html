@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{layouts/application :: html}">
+<head>
+    <title th:text="${pageTitle}">Oceanheart Auth</title>
+</head>
+
+<body>
+    <main th:replace="~{layouts/application :: content}">
+        <div class="terminal-page centered flex justify-center px-4 py-12">
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="terminal-controls">
+                        <div class="terminal-control close"></div>
+                        <div class="terminal-control minimize"></div>
+                        <div class="terminal-control maximize"></div>
+                    </div>
+                    <div class="terminal-title">oceanheart-passport</div>
+                </div>
+                
+                <div class="terminal-content">
+                    <div class="terminal-prompt">oceanheart-passport</div>
+                    <div class="terminal-text mb-6">
+                        <span class="gradient-text">Welcome to Oceanheart Authentication</span>
+                    </div>
+
+                    <!-- Authenticated User -->
+                    <div sec:authorize="isAuthenticated()" th:if="${user}">
+                        <div class="terminal-success mb-6">
+                            <div class="terminal-text">
+                                System Status: <strong>AUTHENTICATED</strong>
+                            </div>
+                            <div class="terminal-text-muted">
+                                User: <span th:text="${user.firstName + ' ' + user.lastName}">User Name</span>
+                                (<span th:text="${user.emailAddress}">user@example.com</span>)
+                            </div>
+                            <div class="terminal-text-muted">
+                                Role: <span th:text="${user.role}">USER</span>
+                            </div>
+                        </div>
+                        
+                        <div class="terminal-text mb-4">Available Commands:</div>
+                        
+                        <div class="flex flex-col gap-3">
+                            <form th:action="@{/sign-out}" method="post" style="display: inline;">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <button type="submit" class="terminal-button">
+                                    SIGN OUT
+                                </button>
+                            </form>
+                            
+                            <div sec:authorize="hasRole('ADMIN')">
+                                <a th:href="@{/admin}" class="terminal-button-secondary">
+                                    ADMIN PANEL
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="terminal-divider"></div>
+                        
+                        <div class="terminal-text mb-2">Oceanheart Services:</div>
+                        <div class="flex flex-col gap-2">
+                            <a href="http://watson.lvh.me:3000" target="_blank" class="terminal-link">
+                                → Watson (Clinical Review)
+                            </a>
+                            <a href="http://notebook.lvh.me:3000" target="_blank" class="terminal-link">
+                                → Notebook (Blog)
+                            </a>
+                            <a href="http://preflight.lvh.me:3000" target="_blank" class="terminal-link">
+                                → Preflight (AI Readiness)
+                            </a>
+                            <a href="http://my.lvh.me:3000" target="_blank" class="terminal-link">
+                                → My Oceanheart
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Unauthenticated User -->
+                    <div sec:authorize="!isAuthenticated()">
+                        <div class="terminal-warning mb-6">
+                            <div class="terminal-text">
+                                System Status: <strong>UNAUTHENTICATED</strong>
+                            </div>
+                            <div class="terminal-text-muted">
+                                Please authenticate to access Oceanheart services
+                            </div>
+                        </div>
+                        
+                        <div class="terminal-text mb-4">Authentication Required</div>
+                        
+                        <div class="flex flex-col gap-3">
+                            <a th:href="@{/sign-in}" class="terminal-button">
+                                SIGN IN
+                            </a>
+                            
+                            <a th:href="@{/sign-up}" class="terminal-button-secondary">
+                                CREATE ACCOUNT
+                            </a>
+                        </div>
+                        
+                        <div class="terminal-divider"></div>
+                        
+                        <div class="terminal-text-muted mb-2">About Oceanheart:</div>
+                        <div class="terminal-text-muted text-sm">
+                            Oceanheart provides AI-powered tools for healthcare professionals, 
+                            researchers, and organizations. Our authentication platform enables 
+                            secure access across all Oceanheart services.
+                        </div>
+                    </div>
+                    
+                    <!-- System Information -->
+                    <div class="terminal-divider"></div>
+                    <div class="terminal-text-muted text-center">
+                        <div>Spring Passport v1.0</div>
+                        <div>Powered by Spring Boot & Glass Morphism UI</div>
+                        <div class="terminal-cursor">System ready</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

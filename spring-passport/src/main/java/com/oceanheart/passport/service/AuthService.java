@@ -277,6 +277,70 @@ public class AuthService {
     }
 
     /**
+     * Check if user exists by email
+     */
+    public boolean userExists(String email) {
+        return userRepository.findByEmailAddress(email).isPresent();
+    }
+
+    /**
+     * Find user by email
+     */
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmailAddress(email).orElse(null);
+    }
+
+    /**
+     * Create new user
+     */
+    public User createUser(String firstName, String lastName, String email, String password) {
+        if (userExists(email)) {
+            throw new IllegalArgumentException("User with email " + email + " already exists");
+        }
+
+        User user = new User();
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setEmailAddress(email);
+        user.setPasswordDigest(passwordEncoder.encode(password));
+        user.setRole("USER");
+        user.setConfirmed(true); // Auto-confirm for now
+        user.setCreatedAt(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
+
+        return userRepository.save(user);
+    }
+
+    /**
+     * Authenticate user and return result with token and session
+     */
+    public java.util.Map<String, Object> authenticateUser(String email, String password, String ipAddress, String userAgent) {
+        AuthenticationResult result = authenticate(email, password, ipAddress, userAgent);
+        
+        if (!result.success()) {
+            throw new IllegalArgumentException(result.message());
+        }
+        
+        return java.util.Map.of(
+            "user", result.user(),
+            "token", result.jwtToken(),
+            "sessionId", result.session().getId().toString()
+        );
+    }
+
+    /**
+     * Destroy session
+     */
+    public void destroySession(String sessionId) {
+        try {
+            UUID uuid = UUID.fromString(sessionId);
+            signOut(uuid);
+        } catch (IllegalArgumentException e) {
+            logger.warn("Invalid session ID format: {}", sessionId);
+        }
+    }
+
+    /**
      * Authentication result record
      */
     public record AuthenticationResult(

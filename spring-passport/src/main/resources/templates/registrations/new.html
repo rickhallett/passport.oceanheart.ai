@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{layouts/application :: html}">
+<head>
+    <title th:text="${pageTitle}">Sign Up</title>
+</head>
+
+<body>
+    <main th:replace="~{layouts/application :: content}">
+        <div class="terminal-page centered flex justify-center px-4 py-12">
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="terminal-controls">
+                        <div class="terminal-control close"></div>
+                        <div class="terminal-control minimize"></div>
+                        <div class="terminal-control maximize"></div>
+                    </div>
+                    <div class="terminal-title">oceanheart-passport --register</div>
+                </div>
+                
+                <div class="terminal-content">
+                    <div class="terminal-prompt">oceanheart-passport --register</div>
+                    <div class="terminal-text mb-6">Initializing new user registration...</div>
+
+                    <div class="auth-container">
+                        <!-- Flash messages -->
+                        <div th:if="${error}" class="terminal-error" th:text="${error}"></div>
+                        <div th:if="${notice}" class="terminal-success" th:text="${notice}"></div>
+                        
+                        <!-- Validation errors -->
+                        <div th:if="${#fields.hasErrors('signUpRequest')}" class="terminal-error">
+                            <div th:each="err : ${#fields.errors('signUpRequest')}" th:text="${err}"></div>
+                        </div>
+
+                        <div class="terminal-text mb-4">Ready for new user</div>
+
+                        <form th:action="@{/sign-up}" 
+                              th:object="${signUpRequest}"
+                              method="post" 
+                              class="terminal-form">
+                            
+                            <!-- CSRF Token -->
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            
+                            <!-- Return To -->
+                            <input th:if="${returnTo}" type="hidden" name="returnTo" th:value="${returnTo}" />
+
+                            <div>
+                                <label for="firstName" class="terminal-label">
+                                    First Name
+                                </label>
+                                <input type="text" 
+                                       id="firstName"
+                                       th:field="*{firstName}"
+                                       required="required" 
+                                       autofocus="autofocus" 
+                                       autocomplete="given-name" 
+                                       placeholder="John" 
+                                       maxlength="50"
+                                       class="terminal-input"
+                                       th:errorclass="error" />
+                                <div th:if="${#fields.hasErrors('firstName')}" class="terminal-error">
+                                    <span th:errors="*{firstName}"></span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="lastName" class="terminal-label">
+                                    Last Name
+                                </label>
+                                <input type="text" 
+                                       id="lastName"
+                                       th:field="*{lastName}"
+                                       required="required" 
+                                       autocomplete="family-name" 
+                                       placeholder="Doe" 
+                                       maxlength="50"
+                                       class="terminal-input"
+                                       th:errorclass="error" />
+                                <div th:if="${#fields.hasErrors('lastName')}" class="terminal-error">
+                                    <span th:errors="*{lastName}"></span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="emailAddress" class="terminal-label">
+                                    Email Address
+                                </label>
+                                <input type="email" 
+                                       id="emailAddress"
+                                       th:field="*{emailAddress}"
+                                       required="required" 
+                                       autocomplete="username" 
+                                       placeholder="john@oceanheart.ai" 
+                                       class="terminal-input"
+                                       th:errorclass="error" />
+                                <div th:if="${#fields.hasErrors('emailAddress')}" class="terminal-error">
+                                    <span th:errors="*{emailAddress}"></span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="password" class="terminal-label">
+                                    Password
+                                </label>
+                                <input type="password" 
+                                       id="password"
+                                       th:field="*{password}"
+                                       required="required" 
+                                       autocomplete="new-password" 
+                                       placeholder="••••••••" 
+                                       minlength="8"
+                                       maxlength="72" 
+                                       class="terminal-input"
+                                       th:errorclass="error" />
+                                <div th:if="${#fields.hasErrors('password')}" class="terminal-error">
+                                    <span th:errors="*{password}"></span>
+                                </div>
+                                <div class="terminal-text-muted text-sm mt-1">
+                                    Minimum 8 characters
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="passwordConfirmation" class="terminal-label">
+                                    Confirm Password
+                                </label>
+                                <input type="password" 
+                                       id="passwordConfirmation"
+                                       th:field="*{passwordConfirmation}"
+                                       required="required" 
+                                       autocomplete="new-password" 
+                                       placeholder="••••••••" 
+                                       minlength="8"
+                                       maxlength="72" 
+                                       class="terminal-input"
+                                       th:errorclass="error" />
+                                <div th:if="${#fields.hasErrors('passwordConfirmation')}" class="terminal-error">
+                                    <span th:errors="*{passwordConfirmation}"></span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <button type="submit" class="terminal-button w-full">
+                                    CREATE ACCOUNT
+                                </button>
+                            </div>
+
+                            <div class="text-center">
+                                <span class="terminal-text-muted">Already have an account? </span>
+                                <a th:href="@{/sign-in(returnTo=${returnTo})}" class="terminal-link">
+                                    SIGN IN
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="terminal-divider"></div>
+                    <div class="text-center">
+                        <a th:href="@{/}" class="terminal-button-secondary">
+                            BACK TO HOME
+                        </a>
+                    </div>
+                    
+                    <div class="mt-4 terminal-text-muted text-center">
+                        <span class="terminal-cursor">Registration protocol ready</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

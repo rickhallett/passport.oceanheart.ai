@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <title th:text="${pageTitle} ?: 'Oceanheart Auth'">Oceanheart Auth</title>
+    
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/application.css}">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Additional head content -->
+    <th:block th:fragment="extraHead"></th:block>
+</head>
+
+<body>
+    <!-- Global auth status display (if not suppressed and no flash messages) -->
+    <div th:if="${!suppressAuthStatus and #lists.isEmpty(flashMessages)}" 
+         th:replace="~{shared/auth-status :: auth-status}"></div>
+    
+    <!-- Main content -->
+    <main th:fragment="content">
+        <!-- This will be replaced by page content -->
+    </main>
+    
+    <!-- Flash messages -->
+    <div th:if="${flashMessages}" id="flash-messages">
+        <div th:each="message : ${flashMessages}" 
+             th:class="${'terminal-' + message.type}" 
+             th:text="${message.text}"></div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script th:src="@{/js/application.js}"></script>
+    
+    <!-- Additional JavaScript -->
+    <th:block th:fragment="extraScripts"></th:block>
+</body>
+</html>

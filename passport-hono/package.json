@@ -1,0 +1,24 @@
+{
+  "name": "passport-hono",
+  "version": "1.0.0",
+  "description": "Oceanheart Passport authentication platform - Hono/Bun implementation",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --hot src/server.ts",
+    "start": "bun src/server.ts",
+    "test": "bun test",
+    "migrate": "bun scripts/migrate.ts",
+    "typecheck": "tsc --noEmit",
+    "build": "bun build src/server.ts --outdir=dist --target=bun"
+  },
+  "dependencies": {
+    "hono": "^4.6.16",
+    "postgres": "^3.4.5",
+    "@hono/node-server": "^1.13.8"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.14",
+    "bun-types": "^1.1.34",
+    "typescript": "^5.7.2"
+  }
+}

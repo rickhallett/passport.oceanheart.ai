@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: passport_dev
+      POSTGRES_USER: passport
+      POSTGRES_PASSWORD: passport_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U passport -d passport_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Passport Elysia application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DATABASE_URL: postgresql://passport:passport_dev_password@postgres:5432/passport_dev
+      SECRET_KEY_BASE: development-secret-key-change-in-production-at-least-32-chars
+      COOKIE_DOMAIN: localhost
+      JWT_ISSUER: passport.oceanheart.ai
+      RATE_LIMIT_SIGNIN_ATTEMPTS: 10
+      RATE_LIMIT_SIGNIN_WINDOW_MS: 180000
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: bun --hot src/server.ts
+
+  # Redis for production rate limiting (optional)
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+volumes:
+  postgres_data:
+  redis_data:

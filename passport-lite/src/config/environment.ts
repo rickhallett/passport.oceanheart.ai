@@ -1,5 +1,5 @@
 export const config = {
-  port: parseInt(Bun.env.PORT || "3000"),
+  port: parseInt(Bun.env.PORT || "3001"),
   databaseUrl: Bun.env.DATABASE_URL || "passport.db",
   secretKeyBase: Bun.env.SECRET_KEY_BASE || "development-secret-key-replace-in-production",
   cookieDomain: Bun.env.COOKIE_DOMAIN || "localhost",
