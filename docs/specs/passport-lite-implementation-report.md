@@ -6,9 +6,9 @@
 Implementation of a lightweight, high-performance authentication service using Bun's native APIs, providing feature parity with the Rails-based Passport system.
 
 ## Phases Completed
-- [ ] Phase 1: Core Authentication
+- [x] Phase 1: Core Authentication
   - Tasks: Project setup, database schema, user model, JWT service, basic API endpoints
-  - Commits: (pending)
+  - Commits: 472b1d4
 - [ ] Phase 2: Web Interface
   - Tasks: TSX views, web routes, session management, CSRF protection, cookie handling
   - Commits: (pending)
