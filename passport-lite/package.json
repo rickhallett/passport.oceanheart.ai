@@ -1,0 +1,24 @@
+{
+  "name": "passport-lite",
+  "version": "1.0.0",
+  "description": "Lightweight authentication service built with Bun",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --hot src/server.ts",
+    "start": "bun src/server.ts",
+    "test": "bun test",
+    "migrate": "bun migrations/migrate.ts run",
+    "migrate:rollback": "bun migrations/migrate.ts rollback",
+    "migrate:status": "bun migrations/migrate.ts status",
+    "build": "bun build src/server.ts --outdir=dist --target=bun",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "bun": ">=1.1.0"
+  }
+}
